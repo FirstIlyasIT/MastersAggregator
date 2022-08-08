@@ -4,11 +4,11 @@ public class Order : BaseModel
 {
     public Order(User orderSender, IEnumerable<Image> images)
     {
-        OrderSender = orderSender;
+        Sender = orderSender;
         Images = images;
     }
 
-    public User OrderSender { get; }
+    public User Sender { get; }
     
     public IEnumerable<Image> Images { get; }
 }
