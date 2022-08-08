@@ -6,3 +6,6 @@ MastersAggregatorService/obj/
 MastersAggregatorService/bin/Debug/net6.0/
 
 .fake
+MastersAggregator.Test/obj/Debug/net6.0/
+
+MastersAggregator.Test/obj/
