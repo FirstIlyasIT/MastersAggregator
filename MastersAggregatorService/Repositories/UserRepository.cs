@@ -6,12 +6,12 @@ public class UserRepository : BaseRepository<User>
 {
     public static List<User> Users { get; }
 
-    static UserRepository() //В конструкторе создаем 3-х пользователей 
+    static UserRepository() //Р’ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂРµ СЃРѕР·РґР°РµРј 3-С… РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ 
     {
         Users = new List<User>
         {
             new User { UserName = "Sergey", UserFirstName = "Sidorov", UserPfone = "+745-34-34-153" },
-            new User { UserName = "Антон", UserFirstName = "Быстрый", UserPfone = "+745-77-88-111" },
+            new User { UserName = "РђРЅС‚РѕРЅ", UserFirstName = "Р‘С‹СЃС‚СЂС‹Р№", UserPfone = "+745-77-88-111" },
             new User { UserName = "Kolia", UserFirstName = "Smelov", UserPfone = "+745-88-11-222" }
         };
     }

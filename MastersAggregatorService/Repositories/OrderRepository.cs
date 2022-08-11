@@ -19,15 +19,15 @@ public class OrderRepository : BaseRepository<Order>
         };
     }
 
-    //добавление данных в таблицу Order
+    //РґРѕР±Р°РІР»РµРЅРёРµ РґР°РЅРЅС‹С… РІ С‚Р°Р±Р»РёС†Сѓ Order
     //public static void Add(Order order) => Orders.Add(order);
     public new void Save(Order order) => Orders.Add(order);
 
-    //получить всю таблицу Order
+    //РїРѕР»СѓС‡РёС‚СЊ РІСЃСЋ С‚Р°Р±Р»РёС†Сѓ Order
     public new List<Order> GetAll() => Orders;
 
 
-    //получить Order по ID
+    //РїРѕР»СѓС‡РёС‚СЊ Order РїРѕ ID
     //public static Order? Get(int id) => Orders.FirstOrDefault(p => p.Id == id);
     public new Order? GetById(int id)
     {
@@ -36,7 +36,7 @@ public class OrderRepository : BaseRepository<Order>
 
         return Orders[id];
     }
-    //”далить по индексу Order
+    //вЂќРґР°Р»РёС‚СЊ РїРѕ РёРЅРґРµРєСЃСѓ Order
     public void Delete(int id)
     {
         var order = GetById(id);
@@ -46,7 +46,7 @@ public class OrderRepository : BaseRepository<Order>
         Orders.Remove(order);
     }
 
-    //»зменить по индексу Order
+    //В»Р·РјРµРЅРёС‚СЊ РїРѕ РёРЅРґРµРєСЃСѓ Order
     public static void Update(Order order)
     {
         var index = Orders.FindIndex(p => p.Id == order.Id);
