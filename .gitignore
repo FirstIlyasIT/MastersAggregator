@@ -9,3 +9,6 @@ MastersAggregatorService/bin/Debug/net6.0/
 MastersAggregator.Test/obj/Debug/net6.0/
 
 MastersAggregator.Test/obj/
+
+# Visual Studio 2015 cache/options directory
+.vs/
