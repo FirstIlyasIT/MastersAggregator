@@ -9,76 +9,69 @@ namespace MastersAggregatorService.Controllers;
 В вики описать эти методы, их маршруты, входящие и исходящие параметры в формате json, а так же коды ответов.
 Создать по тесту для каждого метода с нормализованными данными.*/
 
-//[ApiController] //Так как контроллер помечен атрибутом [ApiController], подразумевается, что параметр Pizza будет находиться в тексте запроса.
+[Route("[controller]")]
 public class OrderController : BaseController<Order>
 {
-    OrderRepository orderReposit = new OrderRepository();
-    public OrderController(BaseRepository<Order> repository) : base(repository)
-    {
+    private OrderRepository _orderRepository { get; set; }
 
+    //public OrderController(BaseRepository<User> repository) : base(repository) 
+    public OrderController(OrderRepository repository) : base(repository)
+    {
+        _orderRepository = repository;
     }
 
-    // GET all action
+    /// <summary>
+    /// GET all order
+    /// </summary> 
+    /// <returns></returns>  
     [HttpGet]
-    public ActionResult<List<Order>> GetAll() =>
-    orderReposit.GetAll();
-
-
-    // GET by Id action
-    [HttpGet("{id}")]
-    public ActionResult<Order> GetById(int id)
+    public JsonResult GetAll()
     {
-        var order = orderReposit.GetById(id);
-
-        if (order == null)
-            return NotFound();
-
-        return order;
+        return new JsonResult(_orderRepository.GetAll());
     }
 
+    /// <summary>
+    /// GET by Id order
+    /// </summary>
+    /// <param Id Order ="id"></param>
+    /// <returns></returns>  
+    [HttpGet("{id}")]
+    public JsonResult GetById(int id)
+    {
+        if (_orderRepository.GetById(id) == null)
+            return new JsonResult("order does not exist");
 
+        return new JsonResult(_orderRepository.GetById(id));
+    }
 
+    /// <summary>
+    /// Save new order
+    /// </summary>
+    /// <param Id User ="idUser"></param>
+    /// <param Id Image ="idImage"></param>
+    /// <returns></returns>  
+    [HttpPost]
+    public JsonResult Save(int idUser, int idImage)
+    {
+        UserRepository userRepositors = new UserRepository();
+        ImageRepository imgRepos = new ImageRepository();
+        Order newOrder = new Order(userRepositors.GetById(idUser), new List<Image> { imgRepos.GetById(idImage) });
 
+        _orderRepository.Add(newOrder);
+        return GetAll();
+    }
 
-    /*
-
-        // POST action
-        [HttpPost] 
-        public IActionResult Create(Order pizza)
-        {
-            PizzaService.Add(pizza);
-            return CreatedAtAction(nameof(Create), new { id = pizza.Id }, pizza);
-        }
-
-
-        // PUT action Изменение или обновление 
-        [HttpPut("{id}")]
-        public IActionResult Update(int id, Pizza pizza)
-        {
-            if (id != pizza.Id)
-                return BadRequest();
-
-            var existingPizza = PizzaService.Get(id);
-            if (existingPizza is null)
-                return NotFound();
-
-            PizzaService.Update(pizza);
-
-            return NoContent();
-        }
-
-
-        // DELETE action
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
-        {
-            var pizza = PizzaService.Get(id);
-
-            if (pizza is null)
-                return NotFound();
-
-            PizzaService.Delete(id);
-
-            return NoContent();
-        }*/
+    /// <summary>
+    /// delete id order
+    /// </summary> 
+    /// <param Id Order ="idOrder"></param>
+    /// <returns></returns>  
+    [HttpDelete]
+    public void Delete(int idOrder)
+    {
+        _orderRepository.Delete(idOrder);
+    }
 }
+ 
+
+     

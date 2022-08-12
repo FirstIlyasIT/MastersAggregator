@@ -4,9 +4,8 @@ namespace MastersAggregatorService.Repositories;
 
 public class OrderRepository : BaseRepository<Order>
 {
-    public static List<Order> Orders { get; }
-
-
+    static List<Order> Orders { get; }
+     
     static OrderRepository()
     {
         UserRepository userRepositors = new UserRepository();
@@ -19,35 +18,33 @@ public class OrderRepository : BaseRepository<Order>
         };
     }
 
-    //добавление данных в таблицу Order
-    //public static void Add(Order order) => Orders.Add(order);
-    public new void Save(Order order) => Orders.Add(order);
+    //добавить в список ордеров новый Order 
+    public new void Add(Order order) => Orders.Add(order);
 
-    //получить всю таблицу Order
+    //получить List Order
     public new List<Order> GetAll() => Orders;
 
 
-    //получить Order по ID
-    //public static Order? Get(int id) => Orders.FirstOrDefault(p => p.Id == id);
+    //получить Order по ID 
     public new Order? GetById(int id)
     {
-        if (Orders[id] is null)
+        if (Orders.Count <= id)
             return null;
 
         return Orders[id];
     }
-    //”далить по индексу Order
+  
+    //Удалить по индексу Order
     public void Delete(int id)
     {
-        var order = GetById(id);
-        if (order is null)
+        if (Orders.Count <= id)
             return;
 
-        Orders.Remove(order);
+        Orders.Remove(GetById(id));
     }
 
-    //»зменить по индексу Order
-    public static void Update(Order order)
+    //изменить по индексу Order
+    public void Update(Order order)
     {
         var index = Orders.FindIndex(p => p.Id == order.Id);
         if (index == -1)
