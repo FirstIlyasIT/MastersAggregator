@@ -13,21 +13,21 @@ public class ImageController : BaseController<Image>
     {
         _imageRepository = repository;
     }
-
+     
     // GET all image
     [HttpGet] 
-    public JsonResult GetAll()
+    public ActionResult GetAll()
     { 
-        return new JsonResult(_imageRepository.GetAll());
+        return Ok(new JsonResult(_imageRepository.GetAll()));
     }
     // GET id image
     [HttpGet("{id}")]
-    public JsonResult GetById(int id)
+    public ActionResult GetById(int id)
     {  
         if (_imageRepository.GetById(id) == null)
             return new JsonResult("Image does not exist");
 
-        return new JsonResult(_imageRepository.GetById(id));  
+        return Ok(new JsonResult(_imageRepository.GetById(id)));  
     }
 
 

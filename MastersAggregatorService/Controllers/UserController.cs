@@ -16,18 +16,18 @@ public class UserController : BaseController<User>
 
     // GET all user
     [HttpGet] 
-    public JsonResult GetAll()
+    public ActionResult GetAll()
     { 
-        return new JsonResult(_userRepository.GetAll());
+        return Ok(new JsonResult(_userRepository.GetAll()));
     }
     // GET all id user
     [HttpGet("{id}")]
-    public JsonResult GetById(int id)
+    public ActionResult GetById(int id)
     {  
         if (_userRepository.GetById(id) == null)
             return new JsonResult("user does not exist");
 
-        return new JsonResult(_userRepository.GetById(id));  
+        return Ok(new JsonResult(_userRepository.GetById(id)));  
     }
 
 }

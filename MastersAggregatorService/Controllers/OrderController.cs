@@ -25,7 +25,7 @@ public class OrderController : BaseController<Order>
     /// </summary> 
     /// <returns></returns>  
     [HttpGet]
-    public JsonResult GetAll()
+    public ActionResult GetAll()
     {
         return new JsonResult(_orderRepository.GetAll());
     }
@@ -36,12 +36,12 @@ public class OrderController : BaseController<Order>
     /// <param Id Order ="id"></param>
     /// <returns></returns>  
     [HttpGet("{id}")]
-    public JsonResult GetById(int id)
+    public ActionResult GetById(int id)
     {
         if (_orderRepository.GetById(id) == null)
             return new JsonResult("order does not exist");
 
-        return new JsonResult(_orderRepository.GetById(id));
+        return Ok(new JsonResult(_orderRepository.GetById(id)));
     }
 
     /// <summary>
@@ -51,14 +51,14 @@ public class OrderController : BaseController<Order>
     /// <param Id Image ="idImage"></param>
     /// <returns></returns>  
     [HttpPost]
-    public JsonResult Save(int idUser, int idImage)
+    public ActionResult Save(int idUser, int idImage)
     {
         UserRepository userRepositors = new UserRepository();
         ImageRepository imgRepos = new ImageRepository();
         Order newOrder = new Order(userRepositors.GetById(idUser), new List<Image> { imgRepos.GetById(idImage) });
 
         _orderRepository.Add(newOrder);
-        return GetAll();
+        return Ok();
     }
 
     /// <summary>
@@ -67,9 +67,18 @@ public class OrderController : BaseController<Order>
     /// <param Id Order ="idOrder"></param>
     /// <returns></returns>  
     [HttpDelete]
-    public void Delete(int idOrder)
+    public ActionResult Delete(int idOrder)
     {
-        _orderRepository.Delete(idOrder);
+        try
+        {
+            _orderRepository.Delete(idOrder);
+        }
+        catch (ArgumentException)
+        { 
+            return NotFound();
+        }
+        
+        return NoContent(); 
     }
 }
  
