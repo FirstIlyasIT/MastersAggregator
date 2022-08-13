@@ -19,8 +19,6 @@ public class MasterRepository : BaseRepository<Master>
 
     public new Master GetById(int id)
     {
-        if (id == null) return null;
-        
         return MastersList.FirstOrDefault(x => x.Id == id);
     }
 
