@@ -14,8 +14,6 @@ namespace MastersAggregatorService.Controllers;
 public class OrderController : BaseController<Order>
 {
     private OrderRepository _orderRepository { get; set; }
-
-    //public OrderController(BaseRepository<User> repository) : base(repository) 
     public OrderController(OrderRepository repository) : base(repository)
     {
         _orderRepository = repository;
@@ -24,18 +22,18 @@ public class OrderController : BaseController<Order>
     /// <summary>
     /// GET all order
     /// </summary> 
-    /// <returns></returns>  
-    [HttpGet] 
+    /// <returns>List of all Order</returns>  
+    [HttpGet]
     public ActionResult GetAll()
     {
-        return new JsonResult(_orderRepository.GetAll());
+        return Ok(new JsonResult(_orderRepository.GetAll()));
     }
 
     /// <summary>
     /// GET by Id order
     /// </summary>
     /// <param Id Order ="id"></param>
-    /// <returns></returns>  
+    /// <returns>Order by id</returns>  
     [HttpGet("{id}")]
     public ActionResult GetById(int id)
     {
@@ -46,19 +44,19 @@ public class OrderController : BaseController<Order>
     }
 
     /// <summary>
-    /// Save new order
+    /// Save new order or idit order
     /// </summary>
     /// <param Id User ="idUser"></param>
     /// <param Id Image ="idImage"></param>
-    /// <returns></returns>  
+    /// <returns>Save new order or idit order</returns>  
     [HttpPost]
     public ActionResult Save(int idUser, int idImage)
     {
         UserRepository userRepositors = new UserRepository();
         ImageRepository imgRepos = new ImageRepository();
-        Order newOrder = new Order(_orderRepository.GetCount(),   userRepositors.GetById(idUser), new List<Image> { imgRepos.GetById(idImage) });
+        Order newOrder = new Order(_orderRepository.GetCount(), userRepositors.GetById(idUser), new List<Image> { imgRepos.GetById(idImage) });
 
-        _orderRepository.Add(newOrder);
+        _orderRepository.Save(newOrder);
         return Ok();
     }
 
@@ -66,7 +64,7 @@ public class OrderController : BaseController<Order>
     /// delete id order
     /// </summary> 
     /// <param Id Order ="idOrder"></param>
-    /// <returns></returns>  
+    /// <returns>Delete Id Order</returns>  
     [HttpDelete]
     public ActionResult Delete(int idOrder)
     {
@@ -75,13 +73,10 @@ public class OrderController : BaseController<Order>
             _orderRepository.Delete(idOrder);
         }
         catch (ArgumentException)
-        { 
+        {
             return NotFound();
         }
-        
-        return NoContent(); 
+
+        return NoContent();
     }
 }
- 
-
-     

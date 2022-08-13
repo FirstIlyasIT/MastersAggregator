@@ -6,9 +6,7 @@ namespace MastersAggregatorService.Controllers;
 [Route("[controller]")]
 public class UserController : BaseController<User>
 { 
-    private UserRepository _userRepository { get; set; }
-     
- //   public UserController(BaseRepository<User> repository) : base(repository) 
+    private UserRepository _userRepository { get; set; } 
     public UserController(UserRepository repository) : base(repository)
     {
         _userRepository = repository;
@@ -20,7 +18,7 @@ public class UserController : BaseController<User>
     { 
         return Ok(new JsonResult(_userRepository.GetAll()));
     }
-    // GET all id user
+    // GET id user
     [HttpGet("{id}")]
     public ActionResult GetById(int id)
     {  

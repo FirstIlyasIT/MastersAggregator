@@ -6,9 +6,7 @@ namespace MastersAggregatorService.Controllers;
 [Route("[controller]")] 
 public class ImageController : BaseController<Image>
 { 
-    private ImageRepository _imageRepository { get; set; }
-
-    //public ImageController(BaseRepository<Image> repository) : base(repository)
+    private ImageRepository _imageRepository { get; set; } 
     public ImageController(ImageRepository repository) : base(repository)
     {
         _imageRepository = repository;

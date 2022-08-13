@@ -14,13 +14,13 @@ public class ImageRepository : BaseRepository<Image>
             new Image { Id = 1, ImageUrl = "https://my-domen.com/conten/images/21325.ipg", ImageDescription = "описание работы: у мен¤ не закрываетьс¤ окно на фото видно проблему" },
             new Image { Id = 2, ImageUrl = "https://my-domen.com/conten/images/21326.ipg", ImageDescription = "описание работы: перекос окна вид с другой стороны" }
         };
-    } 
+    }
 
     //получить List Users
     public new List<Image> GetAll() => Images;
     //получить по Id  
     public new Image? GetById(int id)
-    { 
+    {
         if (Images.Count <= id)
             return null;
 

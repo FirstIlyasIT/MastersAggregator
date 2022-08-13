@@ -24,7 +24,6 @@ public class OrderRepository : BaseRepository<Order>
     //получить List Order
     public new List<Order> GetAll() => Orders;
 
-
     //получить Order по ID 
     public new Order? GetById(int id)
     {
@@ -33,7 +32,7 @@ public class OrderRepository : BaseRepository<Order>
 
         return Orders[id];
     }
-  
+
     //Удалить по индексу Order
     public void Delete(int id)
     {
@@ -43,17 +42,22 @@ public class OrderRepository : BaseRepository<Order>
         Orders.Remove(GetById(id));
     }
 
-    //изменить по индексу Order
-    public void Update(Order order)
+    //изменить по индексу Order или добавить новый если такого ордера нет - проверяем по Id
+    public new void Save(Order order)
     {
+        //получаем индекс order  
         var index = Orders.FindIndex(p => p.Id == order.Id);
-        if (index == -1)
-            return;
 
-        Orders[index] = order;
+        //если индекс не существует - значит метод добавления добвляем новый Order
+        if (index == -1)
+        {
+            Orders.Add(order);
+            return;
+        }
+        else //изменение Order  
+            Orders[index] = order;
     }
 
-    //получить Count
+    //получить Count Orders
     public int GetCount() => Orders.Count;
-    
 }
