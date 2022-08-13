@@ -46,17 +46,12 @@ public class OrderController : BaseController<Order>
     /// <summary>
     /// Save new order or idit order
     /// </summary>
-    /// <param Id User ="idUser"></param>
-    /// <param Id Image ="idImage"></param>
+    /// <param Order ="Order"></param> 
     /// <returns>Save new order or idit order</returns>  
     [HttpPost]
-    public ActionResult Save(int idUser, int idImage)
-    {
-        UserRepository userRepositors = new UserRepository();
-        ImageRepository imgRepos = new ImageRepository();
-        Order newOrder = new Order(_orderRepository.GetCount(), userRepositors.GetById(idUser), new List<Image> { imgRepos.GetById(idImage) });
-
-        _orderRepository.Save(newOrder);
+    public ActionResult Save(Order saveOrder)
+    { 
+        _orderRepository.Save(saveOrder);
         return Ok();
     }
 
