@@ -14,7 +14,12 @@ public abstract class BaseRepository<T> where T: BaseModel
         throw new NotImplementedException();
     }
 
-    public void Save(T model)
+    /// <summary>
+    /// Saves a new object or updates if exist
+    /// </summary>
+    /// <param name="model">Object to save</param>
+    /// <returns>New object with database Id</returns>
+    public T Save(T model)
     {
         throw new NotImplementedException();
     }
