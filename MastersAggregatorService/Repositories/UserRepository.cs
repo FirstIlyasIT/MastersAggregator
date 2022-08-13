@@ -10,9 +10,9 @@ public class UserRepository : BaseRepository<User>
     {
         Users = new List<User>
         {
-            new User { UserId = 0, UserName = "Sergey", UserFirstName = "Sidorov", UserPfone = "+745-34-34-153" },
-            new User { UserId = 1, UserName = "Антон", UserFirstName = "Быстрый", UserPfone = "+745-77-88-111" },
-            new User { UserId = 2, UserName = "Kolia", UserFirstName = "Smelov", UserPfone = "+745-88-11-222" }
+            new User { Id = 0, UserName = "Sergey", UserFirstName = "Sidorov", UserPfone = "+745-34-34-153" },
+            new User { Id = 1, UserName = "Антон", UserFirstName = "Быстрый", UserPfone = "+745-77-88-111" },
+            new User { Id = 2, UserName = "Kolia", UserFirstName = "Smelov", UserPfone = "+745-88-11-222" }
         };
     }
 

@@ -4,8 +4,8 @@ namespace MastersAggregatorService.Repositories;
 
 public class OrderRepository : BaseRepository<Order>
 {
-    static List<Order> Orders { get; }
-     
+    static List<Order> Orders { get; set; }
+
     static OrderRepository()
     {
         UserRepository userRepositors = new UserRepository();
@@ -13,8 +13,8 @@ public class OrderRepository : BaseRepository<Order>
 
         Orders = new List<Order>
         {
-            new Order(userRepositors.GetById(0), new List<Image> { imgRepos.GetById(0) }),
-            new Order(userRepositors.GetById(1), new List<Image> { imgRepos.GetById(1), imgRepos.GetById(2) })
+            new Order( 0, userRepositors.GetById(0), new List<Image> { imgRepos.GetById(0) }),
+            new Order( 1, userRepositors.GetById(1), new List<Image> { imgRepos.GetById(1), imgRepos.GetById(2) })
         };
     }
 
@@ -52,4 +52,8 @@ public class OrderRepository : BaseRepository<Order>
 
         Orders[index] = order;
     }
+
+    //получить Count
+    public int GetCount() => Orders.Count;
+    
 }

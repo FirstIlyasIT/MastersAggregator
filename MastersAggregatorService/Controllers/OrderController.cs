@@ -55,7 +55,7 @@ public class OrderController : BaseController<Order>
     {
         UserRepository userRepositors = new UserRepository();
         ImageRepository imgRepos = new ImageRepository();
-        Order newOrder = new Order(userRepositors.GetById(idUser), new List<Image> { imgRepos.GetById(idImage) });
+        Order newOrder = new Order(_orderRepository.GetCount(),   userRepositors.GetById(idUser), new List<Image> { imgRepos.GetById(idImage) });
 
         _orderRepository.Add(newOrder);
         return Ok();
