@@ -2,7 +2,7 @@ namespace MastersAggregatorService.Models;
 
 public class Order : BaseModel
 {
-    public Order(User orderSender, IEnumerable<Image> images)
+    public Order(int id, User orderSender, IEnumerable<Image> images) : base(id)
     {
         Sender = orderSender;
         Images = images;
