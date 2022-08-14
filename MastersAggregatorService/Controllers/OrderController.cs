@@ -26,7 +26,7 @@ public class OrderController : BaseController<Order>
     [HttpGet]
     public ActionResult GetAll()
     {
-        return Ok(new JsonResult(_orderRepository.GetAll()));
+        return Ok(_orderRepository.GetAll());
     }
 
     /// <summary>
@@ -40,19 +40,24 @@ public class OrderController : BaseController<Order>
         if (_orderRepository.GetById(id) == null)
             return new JsonResult("order does not exist");
 
-        return Ok(new JsonResult(_orderRepository.GetById(id)));
+        return Ok(_orderRepository.GetById(id));
     }
 
     /// <summary>
-    /// Save new order or idit order
+    /// Saves a new object 
     /// </summary>
-    /// <param Order ="Order"></param> 
-    /// <returns>Save new order or idit order</returns>  
+    /// <param name="idUser">Id Model User</param>
+    /// <param name="idImage">Id Model Image</param>
+    /// <returns>New object with database Id</returns>
     [HttpPost]
-    public ActionResult Save(Order saveOrder)
-    { 
-        _orderRepository.Save(saveOrder);
-        return Ok();
+    public ActionResult Save(int idUser, int[] arrIdImage)
+    {
+        int? idOrder = _orderRepository.SaveOrder(idUser, arrIdImage);
+
+        if (idOrder == null)
+            return NotFound($"id User {idUser} does not exist, can't create order");
+
+        return Ok(idOrder);
     }
 
     /// <summary>
@@ -65,13 +70,11 @@ public class OrderController : BaseController<Order>
     {
         try
         {
-            _orderRepository.Delete(idOrder);
+            return Ok(_orderRepository.DeleteId(idOrder));
         }
         catch (ArgumentException)
         {
             return NotFound();
         }
-
-        return NoContent();
     }
 }

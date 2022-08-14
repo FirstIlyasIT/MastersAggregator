@@ -18,10 +18,12 @@ public class UserRepository : BaseRepository<User>
 
     //получить List Users
     public new List<User> GetAll() => Users;
-    //получить по Id  
+
+    //получить User по Id   
     public new User? GetById(int id)
     {
-        if (Users.Count <= id)
+        var index = Users.FindIndex(p => p.Id == id);
+        if (index == -1)
             return null;
 
         return Users[id];

@@ -18,10 +18,12 @@ public class ImageRepository : BaseRepository<Image>
 
     //получить List Users
     public new List<Image> GetAll() => Images;
-    //получить по Id  
+
+    //получить Image по Id   
     public new Image? GetById(int id)
     {
-        if (Images.Count <= id)
+        var index = Images.FindIndex(p => p.Id == id);
+        if (index == -1)
             return null;
 
         return Images[id];

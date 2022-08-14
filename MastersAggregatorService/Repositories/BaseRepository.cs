@@ -23,6 +23,16 @@ public abstract class BaseRepository<T> where T : BaseModel
     {
         throw new NotImplementedException();
     }
+
+    /// <summary>
+    /// Delete object 
+    /// </summary>
+    /// <param name="id">id object to delete</param>
+    /// <returns></returns>
+    public T DeleteId(int id)
+    {
+        throw new NotImplementedException();
+    }
 }
 
  
