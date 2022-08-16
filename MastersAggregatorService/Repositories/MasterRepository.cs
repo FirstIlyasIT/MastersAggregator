@@ -17,23 +17,45 @@ public class MasterRepository : BaseRepository<Master>
         };
     }
 
-    public new Master GetById(int id)
+    public override Master GetById(int id)
     {
         return MastersList.FirstOrDefault(x => x.Id == id);
     }
 
-    public new IEnumerable<Master> GetAll()
+    public override IEnumerable<Master> GetAll()
     {
         return MastersList;
     }
 
-    public IEnumerable<Master> FindByCondition(bool condition)
+    public override IEnumerable<Master> GetByCondition(bool condition)
     {
-        return MastersList.Where(x => x.IsActive == condition);
+        return MastersList.Where(x => x.IsActive == condition).ToList();
     }
 
+    /// <summary>
+    /// Changes model condition and returns it back
+    /// </summary>
+    /// <param name="model">Object to save</param>
+    /// <returns>New object with database Id</returns>
     public Master ChangeCondition(Master master)
     {
-        throw new NotImplementedException();
+        if (master.IsActive == false)
+        {
+            master.IsActive = true;
+            return Save(master);
+        }
+
+        master.IsActive = false;
+        return Save(master);
+    }
+
+    /// <summary>
+    /// Saves a new object or updates if exist
+    /// </summary>
+    /// <param name="model">Object to save</param>
+    /// <returns>New object with database Id</returns>
+    public override Master Save(Master model)
+    {
+        return model;
     }
 }

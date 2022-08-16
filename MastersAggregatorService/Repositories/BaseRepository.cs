@@ -4,12 +4,12 @@ namespace MastersAggregatorService.Repositories;
 
 public abstract class BaseRepository<T> where T: BaseModel
 {
-    public IEnumerable<T> GetAll()
+    public virtual IEnumerable<T> GetAll()
     {
         throw new NotImplementedException();
     }
 
-    public T GetById(int id)
+    public virtual T GetById(int id)
     {
         throw new NotImplementedException();
     }
@@ -19,7 +19,12 @@ public abstract class BaseRepository<T> where T: BaseModel
     /// </summary>
     /// <param name="model">Object to save</param>
     /// <returns>New object with database Id</returns>
-    public T Save(T model)
+    public virtual T Save(T model)
+    {
+        throw new NotImplementedException();
+    }
+
+    public virtual IEnumerable<T> GetByCondition(bool condition)
     {
         throw new NotImplementedException();
     }
