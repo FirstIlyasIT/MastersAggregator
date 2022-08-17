@@ -15,12 +15,14 @@ public class ImageRepository : BaseRepository<Image>
             new Image { Id = 2, ImageUrl = "https://my-domen.com/conten/images/21326.ipg", ImageDescription = "описание работы: перекос окна вид с другой стороны" }
         };
     }
+   
 
-    //получить List Users
-    public new List<Image> GetAll() => Images;
+    public override IEnumerable<Image> GetAll()
+    {
+        return Images;
+    }
 
-    //получить Image по Id   
-    public new Image? GetById(int id)
+    public override Image? GetById(int id)
     {
         var index = Images.FindIndex(p => p.Id == id);
         if (index == -1)
@@ -28,23 +30,19 @@ public class ImageRepository : BaseRepository<Image>
 
         return Images[id];
     }
-    public override IEnumerable<Image> GetAll()
-    {
-        throw new NotImplementedException();
-    }
-
-    public override Image GetById(int id)
-    {
-        throw new NotImplementedException();
-    }
 
     public override Image Save(Image model)
     {
-        throw new NotImplementedException();
+        Images.Add(model);
+        return model;
     }
 
     public override void Delete(Image model)
     {
-        throw new NotImplementedException();
+        var index = Images.FindIndex(p => p.Id == model.Id);
+        if (index == -1)
+            return;
+
+        Images.Remove(GetById(model.Id));
     }
 }

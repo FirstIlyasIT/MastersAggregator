@@ -1,7 +1,7 @@
 using MastersAggregatorService.Models;
 
 namespace MastersAggregatorService.Repositories;
- 
+
 public abstract class BaseRepository<T> where T : BaseModel
 {
     public abstract IEnumerable<T> GetAll();
@@ -12,8 +12,6 @@ public abstract class BaseRepository<T> where T : BaseModel
     /// </summary>
     /// <param name="model">Object to save</param>
     /// <returns>New object with database Id</returns>
-    public T Save(T model)
-    {
-        throw new NotImplementedException();
-    }
+    public abstract T? Save(T model);
+    public abstract void Delete(T model);
 }

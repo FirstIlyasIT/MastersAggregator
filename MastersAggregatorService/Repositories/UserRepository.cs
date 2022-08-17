@@ -4,28 +4,8 @@ namespace MastersAggregatorService.Repositories;
 
 public class UserRepository : BaseRepository<User>
 {
-    public override IEnumerable<User> GetAll()
-    {
-        throw new NotImplementedException();
-    }
-
-    public override User? GetById(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override User Save(User model)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void Delete(User model)
-    {
-        throw new NotImplementedException();
-    }
     static List<User> Users { get; set; }
-
-    static UserRepository() //В конструкторе создаем 3-х пользователей 
+    static UserRepository()  
     {
         Users = new List<User>
         {
@@ -34,12 +14,14 @@ public class UserRepository : BaseRepository<User>
             new User { Id = 2, UserName = "Kolia", UserFirstName = "Smelov", UserPfone = "+745-88-11-222" }
         };
     }
+   
 
-    //получить List Users
-    public new List<User> GetAll() => Users;
-
-    //получить User по Id   
-    public new User? GetById(int id)
+    public override IEnumerable<User> GetAll()
+    {
+        return Users;
+    }
+  
+    public override User? GetById(int id)
     {
         var index = Users.FindIndex(p => p.Id == id);
         if (index == -1)
@@ -47,4 +29,19 @@ public class UserRepository : BaseRepository<User>
 
         return Users[id];
     }
+
+    public override User Save(User model)
+    {
+        Users.Add(model);
+        return model;
+    }
+
+    public override void Delete(User model)
+    {
+        var index = Users.FindIndex(p => p.Id == model.Id);
+        if (index == -1)
+            return;
+
+        Users.Remove(GetById(model.Id));
+    } 
 }
