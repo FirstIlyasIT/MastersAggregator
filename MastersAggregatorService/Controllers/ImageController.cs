@@ -5,7 +5,7 @@ namespace MastersAggregatorService.Controllers;
 
 public class ImageController : BaseController<Image>
 {
-    public ImageController(BaseRepository<Image> repository) : base(repository)
+    public ImageController(ImageRepository repository)
     {
     }
 }
