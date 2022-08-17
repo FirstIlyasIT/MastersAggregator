@@ -4,15 +4,8 @@ namespace MastersAggregatorService.Repositories;
  
 public abstract class BaseRepository<T> where T : BaseModel
 {
-    public IEnumerable<T> GetAll()
-    {
-        throw new NotImplementedException();
-    }
-     
-    public T GetById(int id)
-    {
-        throw new NotImplementedException();
-    }
+    public abstract IEnumerable<T> GetAll();
+    public abstract T? GetById(int id);
 
     /// <summary>
     /// Saves a new object or updates if exist
@@ -23,16 +16,4 @@ public abstract class BaseRepository<T> where T : BaseModel
     {
         throw new NotImplementedException();
     }
-
-    /// <summary>
-    /// Delete object 
-    /// </summary>
-    /// <param name="id">id object to delete</param>
-    /// <returns></returns>
-    public T DeleteId(int id)
-    {
-        throw new NotImplementedException();
-    }
 }
-
- 

@@ -12,20 +12,63 @@ public class UserController : BaseController<User>
         _userRepository = repository;
     }
 
-    // GET all user
-    [HttpGet] 
-    public ActionResult GetAll()
-    { 
-        return Ok(new JsonResult(_userRepository.GetAll()));
+[ApiController]
+[Route("{controller}")]
+[Produces("application/json")]
+[Consumes("application/json")]
+public class UserController : BaseController<User>
+{
+    private readonly UserRepository _repository;
+    public UserController(UserRepository repository)
+    {
+        _repository = repository;
     }
-    // GET id user
-    [HttpGet("{id}")]
-    public ActionResult GetById(int id)
-    {  
-        if (_userRepository.GetById(id) == null)
-            return new JsonResult("user does not exist");
 
-        return Ok(new JsonResult(_userRepository.GetById(id)));  
+    [HttpGet("id")]
+    public IActionResult GetUser(int id)
+    {
+        var user = _repository.GetById(id);
+        if (user is null)
+            return NotFound();
+        else
+            return Ok(new JsonResult(user));
+    }
+
+    [HttpGet]
+    [Route("all")]
+    public IActionResult GetUsers()
+    {
+        var users = _repository.GetAll();
+        if (users.Any())
+            return Ok(users);
+        else
+            return NotFound();
+    }
+
+    [HttpDelete("id")]
+    public IActionResult DeleteUser(int id)
+    {
+        var user = _repository.GetById(id);
+        if (user is null)
+            return BadRequest();
+        else
+        {
+            _repository.Delete(user);
+            return NoContent();
+        }
+    }
+
+    [HttpPost]
+    public IActionResult CreateUser([FromBody]User user)
+    {
+        var users = _repository.GetAll();
+        if (users.Contains(user))
+            return BadRequest();
+        else
+        {
+            _repository.Save(user);
+            return NoContent();
+        }
     }
 
 }
