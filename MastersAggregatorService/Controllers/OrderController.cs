@@ -5,7 +5,7 @@ namespace MastersAggregatorService.Controllers;
 
 public class OrderController : BaseController<Order>
 {
-    public OrderController(BaseRepository<Order> repository) : base(repository)
+    public OrderController(OrderRepository repository)
     {
         
     }
