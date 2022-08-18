@@ -22,7 +22,7 @@ public class MasterController : BaseController<Master>
     /// <returns>List of all masters in Json format</returns>
     /// <response code="200"> Returns List of all Masters in Json format.</response>
     [HttpGet]
-    [Route("all")]
+    [Route("masters")]
     public IActionResult GetAll()
     {
         return Ok(new JsonResult(_repository.GetAll()));
@@ -54,6 +54,7 @@ public class MasterController : BaseController<Master>
     /// <param name="Boolean condition"></param>
     /// <returns>List of masters by condition in Json format</returns>
     /// <response code="200"> Returns Masters by condition in Json format.</response>
+    /// <response code="404"> Masters with this condition does not exist</response>
     [HttpGet("{condition:bool}")]
     public IActionResult GetByCondition(bool condition)
     {
@@ -77,7 +78,8 @@ public class MasterController : BaseController<Master>
     /// <response code="200"> Changes master's condition.</response>
     /// <response code="400"> Invalid master's model</response>
     [HttpPost]
-    public IActionResult ChangeCondition([FromBody]Master master)
+    [Route("ChangeCondition")]
+    public IActionResult ChangeCondition(Master master)
     {
         if (ModelState.IsValid)
         {
