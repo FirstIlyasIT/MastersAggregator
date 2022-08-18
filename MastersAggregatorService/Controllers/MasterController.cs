@@ -11,7 +11,7 @@ public class MasterController : BaseController<Master>
 {
     private readonly MasterRepository _repository;
 
-    public MasterController(MasterRepository repository) : base(repository)
+    public MasterController(MasterRepository repository)
     {
         _repository = repository;
     }

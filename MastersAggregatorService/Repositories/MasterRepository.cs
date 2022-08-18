@@ -58,4 +58,9 @@ public class MasterRepository : BaseRepository<Master>
     {
         return model;
     }
+
+    public override void Delete(Master model)
+    {
+        throw new NotImplementedException();
+    }
 }

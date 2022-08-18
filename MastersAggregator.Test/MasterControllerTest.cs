@@ -2,11 +2,8 @@
 using MastersAggregatorService.Models;
 using MastersAggregatorService.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
-using Moq;
 using Assert = NUnit.Framework.Assert;
 
 namespace MastersAggregator.Test;

@@ -14,4 +14,8 @@ public abstract class BaseRepository<T> where T: BaseModel
     /// <returns>New object with database Id</returns>
     public abstract T? Save(T model);
     public abstract void Delete(T model);
+    public virtual IEnumerable<T> GetByCondition(bool condition)
+    {
+        throw new NotImplementedException();
+    }
 }
