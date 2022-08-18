@@ -15,7 +15,7 @@ namespace MastersAggregator.Test;
 public class MasterControllerTest
 {
     [Test]
-    public async Task MasterControllerGetAllTest()
+    public async Task GetAllTest()
     {
         // Arrange
         var repository = Substitute.For<MasterRepository>();
@@ -40,7 +40,7 @@ public class MasterControllerTest
     }
 
     [Test]
-    public async Task MasterControllerGetByIdTest()
+    public async Task GetByIdTest()
     {
         // Arrange
         var repository = Substitute.For<MasterRepository>();
@@ -54,7 +54,6 @@ public class MasterControllerTest
         var controller = new MasterController(repository);
         
         // Act
-
         var objectResultFromGetById = controller.GetById(modelId) as ObjectResult;
 
         var actualJson = objectResultFromGetById.Value as JsonResult;
@@ -70,14 +69,14 @@ public class MasterControllerTest
     }
 
     [Test]
-    public async Task MasterControllerGetByConditionTest()
+    public async Task GetByConditionTest()
     {
         // Arrange
         var repository = Substitute.For<MasterRepository>();
 
         var modelCondition = false;
 
-        repository.GetByCondition(modelCondition).Returns(StaticData.Masters);
+        repository.GetByCondition(modelCondition).Returns(StaticData.Masters.Where(x => x.IsActive == modelCondition));
         
         var controller = new MasterController(repository);
         
@@ -97,12 +96,32 @@ public class MasterControllerTest
         Assert.That(actualJson.Value, Is.EqualTo(expectedJson.Value));
     }
 
+    [Test]
+    public async Task ChangeConditionOkResultTest()
+    {
+        // Arrange
+        var repository = Substitute.For<MasterRepository>();
+        
+        repository.ChangeCondition(StaticData.testMaster)
+            .Returns(StaticData.testMaster);
+        
+        var controller = new MasterController(repository);
+        
+        //Act
+        var result = controller.ChangeCondition(StaticData.testMaster);
+        
+        //Assert
+        Assert.IsNotNull(result);
+        
+        Assert.That(result, Is.InstanceOf<OkResult>());
+    }
+
 
 }
 
 public static class StaticData
 {
-    private static Master testMaster = new Master(0, "Name10", true);
+    public static Master testMaster = new (0, "Name0", true);
     
     public static IEnumerable<Master> Masters = new[]
     {
