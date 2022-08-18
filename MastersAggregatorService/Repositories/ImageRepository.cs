@@ -28,7 +28,7 @@ public class ImageRepository : BaseRepository<Image>
         if (index == -1)
             return null;
 
-        return Images[id];
+        return Images[index];
     }
 
     public override Image Save(Image model)
@@ -43,6 +43,6 @@ public class ImageRepository : BaseRepository<Image>
         if (index == -1)
             return;
 
-        Images.Remove(GetById(model.Id));
+        Images.Remove(GetById(index));
     }
 }

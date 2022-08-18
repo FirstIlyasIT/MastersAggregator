@@ -14,7 +14,7 @@ namespace MastersAggregatorService.Controllers;
         private readonly UserRepository _repository;
         public UserController(UserRepository repository)
         {
-            _repository = repository;
+            this._repository = repository;
         }
 
         [HttpGet("id")]
@@ -55,13 +55,16 @@ namespace MastersAggregatorService.Controllers;
         public IActionResult CreateUser([FromBody] User user)
         {
             var users = _repository.GetAll();
-            if (users.Contains(user))
-                return BadRequest();
-            else
+
+            foreach (var userTemp in users)
             {
-                _repository.Save(user);
-                return NoContent();
+                if (userTemp.Id == user.Id)
+                    return BadRequest();
             }
+            
+            _repository.Save(user);
+            return NoContent();
+            
         }
 
     }

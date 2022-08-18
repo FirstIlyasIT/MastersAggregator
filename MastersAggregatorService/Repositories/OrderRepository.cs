@@ -1,25 +1,25 @@
 using MastersAggregatorService.Models;
 
+
 namespace MastersAggregatorService.Repositories;
 
 public class OrderRepository : BaseRepository<Order>
 { 
     static List<Order> Orders { get; set; }
-
+     
     static OrderRepository()
     {
         UserRepository userRepositors = new UserRepository();
         ImageRepository imgRepos = new ImageRepository();
-
+ 
         Orders = new List<Order>
             {
-                new Order( 0, userRepositors.GetById(0), new List<Image> { imgRepos.GetById(0) }),
-                new Order( 1, userRepositors.GetById(1), new List<Image> { imgRepos.GetById(1), imgRepos.GetById(2) })
+                new Order { Id = 0, Sender = userRepositors.GetById(0), Images = new List<Image> { imgRepos.GetById(0) } },
+                new Order { Id = 1, Sender = userRepositors.GetById(1), Images = new List<Image> { imgRepos.GetById(1), imgRepos.GetById(2) } }
             };
-
-
     }
-     
+
+  
     //get all Order 
     public override IEnumerable<Order> GetAll()
     {
@@ -33,16 +33,16 @@ public class OrderRepository : BaseRepository<Order>
         if (index == -1)
             return null;
 
-        return Orders[id];
+        return Orders[index];
     }
-
+ 
     //create a new order
     public override Order Save(Order model)
-    { 
-        Orders.Add(model); 
-        return model;   
+    {
+        Orders.Add(model);
+        return model;
     }
-
+ 
     //Delete by index Order 
     public override void Delete(Order model)
     {
@@ -50,7 +50,7 @@ public class OrderRepository : BaseRepository<Order>
         if (index == -1)
             return;
 
-        Orders.Remove(GetById(model.Id)); 
+        Orders.Remove(GetById(index)); 
     }
 
     //Get Count Orders

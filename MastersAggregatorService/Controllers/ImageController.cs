@@ -49,7 +49,7 @@ public class ImageController : BaseController<Image>
         else
         {
             _repository.Delete(image);
-            return NoContent();
+            return Ok(NoContent());
         }
     }
 
@@ -57,12 +57,14 @@ public class ImageController : BaseController<Image>
     public IActionResult CreateImage([FromBody] Image image)
     {
         var images = _repository.GetAll();
-        if (images.Contains(image))
-            return BadRequest();
-        else
+         
+        foreach (var imageTemp in images)
         {
-            _repository.Save(image);
-            return NoContent();
+            if (imageTemp.Id == image.Id)
+                return BadRequest();
         }
+
+        _repository.Save(image);
+        return NoContent();
     }
 }

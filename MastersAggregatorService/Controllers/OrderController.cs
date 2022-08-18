@@ -1,11 +1,11 @@
 using MastersAggregatorService.Models;
 using MastersAggregatorService.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
+using Newtonsoft.Json;
+ 
 
 namespace MastersAggregatorService.Controllers;
-  
- 
+   
 [ApiController]
 [Route("api/[controller]/[action]")]
 [Produces("application/json")]
@@ -78,16 +78,18 @@ public class OrderController : BaseController<Order>
     /// <returns></returns>
     /// <response code="200"> create Order.</response>
     /// <response code="400"> I can't create an Order, such an Order already exists.</response> 
-    [HttpPost] 
+    [HttpPost]
     public IActionResult CreateOrder([FromBody] Order order)
-    {  
+    { 
         var orders = _repository.GetAll();
-        if (orders.Contains(order))
-            return BadRequest();
-        else
+        
+        foreach (var orderTemp in orders)
         {
-            _repository.Save(order);
-            return NoContent();
+            if (orderTemp.Id == order.Id)
+                return BadRequest();
         }
+
+        _repository.Save(order);
+        return NoContent(); 
     }
 }
