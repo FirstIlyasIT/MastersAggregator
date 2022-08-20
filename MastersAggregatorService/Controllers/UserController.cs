@@ -63,9 +63,25 @@ namespace MastersAggregatorService.Controllers;
             }
             
             _repository.Save(user);
-            return NoContent();
-            
+            return NoContent(); 
         }
 
+    [HttpPut]
+    public IActionResult UpdateUser([FromBody] User user)
+    {
+        var users = _repository.GetAll();
+
+        foreach (var userTemp in users)
+        {
+            if (userTemp.Id == user.Id)
+            { 
+                DeleteUser(user.Id);
+                _repository.Save(user);
+                return NoContent();
+            }
+        } 
+        return BadRequest(); 
     }
+
+}
  

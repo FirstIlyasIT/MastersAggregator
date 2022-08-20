@@ -97,11 +97,37 @@ public class UserControllerTest
         // Assert
         Assert.That((resultDeleteUser as StatusCodeResult).StatusCode, Is.EqualTo(400));
     }
+
+    [Test]
+    public void UpdateUserOkResultTest()
+    {
+        // Arrange
+        var repository = Substitute.For<UserRepository>(); 
+        repository.GetAll().Returns(StaticData.Users);
+        var controller = new UserController(repository);
+        // Act
+        var resultDeleteUser = controller.UpdateUser(StaticData.TestUser2);
+        // Assert
+        Assert.That((resultDeleteUser as StatusCodeResult).StatusCode, Is.EqualTo(204));
+    }
+
+    [Test]
+    public void UpdateUserBadResultTest()
+    {
+        // Arrange
+        var repository = Substitute.For<UserRepository>(); 
+        repository.GetAll().Returns(StaticData.Users);
+        var controller = new UserController(repository);
+        // Act
+        var resultDeleteUser = controller.UpdateUser(StaticData.TestUser1);
+        // Assert
+        Assert.That((resultDeleteUser as StatusCodeResult).StatusCode, Is.EqualTo(400));
+    }
+ 
 }
 
 
-
-public static class StaticData
+static class StaticData
 {
     //TestUser1 - уникальный юзер нет в Users
     public static User TestUser1 = new User { Id = 15, UserName = "Vadim", UserFirstName = "Sidor", UserPfone = "+745-34-34-153" };
@@ -110,8 +136,8 @@ public static class StaticData
 
     public static List<User> Users = new List<User>
     {
-        new User { Id = 0, UserName = "Andrey", UserFirstName = "Sidorov", UserPfone = "+745-34-34-153" }, 
-        new User { Id = 1, UserName = "Sasha",  UserFirstName = "Smelov",  UserPfone = "+745-88-11-222" } 
+        new User { Id = 0, UserName = "Andrey", UserFirstName = "Sidorov", UserPfone = "+745-34-34-153" },
+        new User { Id = 1, UserName = "Sasha",  UserFirstName = "Smelov",  UserPfone = "+745-88-11-222" }
     };
-     
+
 }

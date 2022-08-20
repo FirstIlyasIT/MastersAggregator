@@ -49,7 +49,7 @@ public class ImageController : BaseController<Image>
         else
         {
             _repository.Delete(image);
-            return Ok(NoContent());
+            return NoContent();
         }
     }
 
@@ -66,5 +66,21 @@ public class ImageController : BaseController<Image>
 
         _repository.Save(image);
         return NoContent();
+    }
+    [HttpPut]
+    public IActionResult UpdateImage([FromBody] Image image)
+    {
+        var Images = _repository.GetAll();
+
+        foreach (var ImageTemp in Images)
+        {
+            if (ImageTemp.Id == image.Id)
+            {
+                DeleteImage(image.Id);
+                _repository.Save(image);
+                return NoContent();
+            }
+        }
+        return BadRequest();
     }
 }
