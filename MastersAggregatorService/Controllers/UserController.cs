@@ -5,66 +5,66 @@ using Microsoft.AspNetCore.Mvc;
 namespace MastersAggregatorService.Controllers;
 
 
-    [ApiController]
-    [Route("api/[controller]/[action]")]
-    [Produces("application/json")]
-    [Consumes("application/json")]
-    public class UserController : BaseController<User>
+[ApiController]
+[Route("api/[controller]/[action]")]
+[Produces("application/json")]
+[Consumes("application/json")]
+public class UserController : BaseController<User>
+{
+    private readonly UserRepository _repository;
+    public UserController(UserRepository repository)
     {
-        private readonly UserRepository _repository;
-        public UserController(UserRepository repository)
-        {
-            this._repository = repository;
-        }
+        this._repository = repository;
+    }
 
-        [HttpGet("id")]
-        public IActionResult GetUser(int id)
-        {
-            var user = _repository.GetById(id);
-            if (user is null)
-                return NotFound();
-            else
-                return Ok(new JsonResult(user));
-        }
+    [HttpGet("id")]
+    public IActionResult GetUser(int id)
+    {
+        var user = _repository.GetById(id);
+        if (user is null)
+            return NotFound();
+        else
+            return Ok(new JsonResult(user));
+    }
 
-        [HttpGet]
-        [Route("all")]
-        public IActionResult GetUsers()
-        {
-            var users = _repository.GetAll();
-            if (users.Any())
-                return Ok(users);
-            else
-                return NotFound();
-        }
+    [HttpGet]
+    [Route("all")]
+    public IActionResult GetUsers()
+    {
+        var users = _repository.GetAll();
+        if (users.Any())
+            return Ok(users);
+        else
+            return NotFound();
+    }
 
-        [HttpDelete("id")]
-        public IActionResult DeleteUser(int id)
+    [HttpDelete("id")]
+    public IActionResult DeleteUser(int id)
+    {
+        var user = _repository.GetById(id);
+        if (user is null)
+            return BadRequest();
+        else
         {
-            var user = _repository.GetById(id);
-            if (user is null)
+            _repository.Delete(user);
+            return NoContent();
+        }
+    }
+
+    [HttpPost]
+    public IActionResult CreateUser([FromBody] User user)
+    {
+        var users = _repository.GetAll();
+
+        foreach (var userTemp in users)
+        {
+            if (userTemp.Id == user.Id)
                 return BadRequest();
-            else
-            {
-                _repository.Delete(user);
-                return NoContent();
-            }
         }
-
-        [HttpPost]
-        public IActionResult CreateUser([FromBody] User user)
-        {
-            var users = _repository.GetAll();
-
-            foreach (var userTemp in users)
-            {
-                if (userTemp.Id == user.Id)
-                    return BadRequest();
-            }
             
-            _repository.Save(user);
-            return NoContent(); 
-        }
+        _repository.Save(user);
+        return NoContent(); 
+    }
 
     [HttpPut]
     public IActionResult UpdateUser([FromBody] User user)

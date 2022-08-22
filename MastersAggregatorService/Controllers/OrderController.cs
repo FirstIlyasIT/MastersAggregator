@@ -88,6 +88,12 @@ public class OrderController : BaseController<Order>
             if (orderTemp.Id == order.Id)
                 return BadRequest();
         }
+         
+        //проверяем существует юзер с таким id если нет юзера то и order создать для него не можем 
+        UserRepository userRepository = new UserRepository(); 
+        if (userRepository.GetById(order.Sender.Id)== null)
+            return BadRequest();
+
 
         _repository.Save(order);
         return NoContent(); 

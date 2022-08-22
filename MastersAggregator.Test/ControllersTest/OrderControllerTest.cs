@@ -113,7 +113,7 @@ public static class StaticDataOrder
     //TestOrder1 - существует в списке Orders
     public static Order TestOrder1 = new Order { Id = 1, Sender = new User { Id = 1, UserName = "Антон", UserFirstName = "Быстрый", UserPfone = "+745-77-88-111" }, Images = new List<Image> { new Image { Id = 1, ImageUrl = "https://my-domen.com/conten/images/21325.ipg", ImageDescription = "описание работы: не закрываеться окно на фото видно проблему" } } };
     //TestOrder2 - нет в списке Orders
-    public static Order TestOrder2 = new Order { Id = 8, Sender = new User { Id = 4, UserName = "Владимир", UserFirstName = "Белый", UserPfone = "+745-77-88-111" }, Images = new List<Image> { new Image { Id = 15, ImageUrl = "https://my-domen.com/conten/images/7777.ipg", ImageDescription = "описание работы: не закрываеться фото" } } };
+    public static Order TestOrder2 = new Order { Id = 8, Sender = new User { Id = 1, UserName = "Антон", UserFirstName = "Быстрый", UserPfone = "+745-77-88-111" }, Images = new List<Image> { new Image { Id = 15, ImageUrl = "https://my-domen.com/conten/images/7777.ipg", ImageDescription = "описание работы: не закрываеться фото" } } };
 
     public static List<Order> Orders = new List<Order>
     {
