@@ -81,16 +81,13 @@ public class OrderController : BaseController<Order>
     [HttpPost]
     public IActionResult CreateOrder([FromBody] Order order)
     { 
-        var orders = _repository.GetAll();
-        
-        foreach (var orderTemp in orders)
-        {
-            if (orderTemp.Id == order.Id)
-                return BadRequest();
-        }
-         
+        var orders = _repository.GetAll(); 
+        //если order с таким id  существует то не создаем его возращаем BadRequest()
+        if (orders.Any(s => s.Id == order.Id))
+            return BadRequest();
+
         //проверяем существует юзер с таким id если нет юзера то и order создать для него не можем 
-        UserRepository userRepository = new UserRepository(); 
+        UserRepository userRepository = new UserRepository();
         if (userRepository.GetById(order.Sender.Id)== null)
             return BadRequest();
 

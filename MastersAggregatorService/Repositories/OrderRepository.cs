@@ -1,25 +1,17 @@
+using MastersAggregatorService.Data;
 using MastersAggregatorService.Models;
-
-
+ 
 namespace MastersAggregatorService.Repositories;
 
 public class OrderRepository : BaseRepository<Order>
 { 
     static List<Order> Orders { get; set; }
-     
-    static OrderRepository()
+    //Все тестовые данные в классе TestData для получения тестовых данных прописал их в конструкторе и получай через DI
+    public OrderRepository()
     {
-        UserRepository userRepositors = new UserRepository();
-        ImageRepository imgRepos = new ImageRepository();
- 
-        Orders = new List<Order>
-            {
-                new Order { Id = 0, Sender = userRepositors.GetById(0), Images = new List<Image> { imgRepos.GetById(0) } },
-                new Order { Id = 1, Sender = userRepositors.GetById(1), Images = new List<Image> { imgRepos.GetById(1), imgRepos.GetById(2) } }
-            };
+        Orders = TestData.Orders;
     }
 
-  
     //get all Order 
     public override IEnumerable<Order> GetAll()
     {
@@ -50,7 +42,7 @@ public class OrderRepository : BaseRepository<Order>
         if (index == -1)
             return;
 
-        Orders.Remove(GetById(index)); 
+        Orders.RemoveAt(index);
     }
 
     //Get Count Orders

@@ -1,18 +1,19 @@
+using MastersAggregatorService.Data;
 using MastersAggregatorService.Models;
 
 namespace MastersAggregatorService.Repositories;
 
 public class UserRepository : BaseRepository<User>
-{
-    static List<User> Users = new List<User>
+{ 
+    static List<User> Users { get; set; }
+    //Все тестовые данные в классе TestData для получения тестовых данных прописал их в конструкторе и получай через DI
+    public UserRepository()
     {
-        new User { Id = 0, UserName = "Sergey", UserFirstName = "Sidorov", UserPfone = "+745-34-34-153" },
-        new User { Id = 1, UserName = "Антон", UserFirstName = "Быстрый", UserPfone = "+745-77-88-111" },
-        new User { Id = 5, UserName = "Kolia", UserFirstName = "Smelov", UserPfone = "+745-88-11-222" }
-    };
+        Users = TestData.Users; 
+    }
 
     public override IEnumerable<User> GetAll()
-    {
+    { 
         return Users;
     }
 
@@ -33,11 +34,11 @@ public class UserRepository : BaseRepository<User>
 
     public override void Delete(User model)
     {
-        var index = Users.FindIndex(p => p.Id == model.Id);
+        int index = Users.FindIndex(p => p.Id == model.Id);
         if (index == -1)
             return;
 
-        Users.Remove(GetById(index));
+        Users.RemoveAt(index);
     }
      
 }

@@ -1,3 +1,4 @@
+using MastersAggregatorService.Data;
 using MastersAggregatorService.Models;
 
 namespace MastersAggregatorService.Repositories;
@@ -5,18 +6,12 @@ namespace MastersAggregatorService.Repositories;
 public class ImageRepository : BaseRepository<Image>
 {
     static List<Image> Images { get; set; }
-
-    static ImageRepository()
-    {
-        Images = new List<Image>
-        {
-            new Image { Id = 0, ImageUrl = "https://my-domen.com/conten/images/21324.ipg", ImageDescription = "описание работы: необходимо починить дверной замок на фото показана поломка - сломался ключ" },
-            new Image { Id = 1, ImageUrl = "https://my-domen.com/conten/images/21325.ipg", ImageDescription = "описание работы: у меня не закрываеться окно на фото видно проблему" },
-            new Image { Id = 2, ImageUrl = "https://my-domen.com/conten/images/21326.ipg", ImageDescription = "описание работы: перекос окна вид с другой стороны" }
-        };
+    //Все тестовые данные в классе TestData для получения тестовых данных прописал их в конструкторе и получай через DI
+    public ImageRepository()
+    { 
+        Images = TestData.Images; 
     }
-   
-
+    
     public override IEnumerable<Image> GetAll()
     {
         return Images;
@@ -43,6 +38,6 @@ public class ImageRepository : BaseRepository<Image>
         if (index == -1)
             return;
 
-        Images.Remove(GetById(index));
+        Images.RemoveAt(index);
     }
 }

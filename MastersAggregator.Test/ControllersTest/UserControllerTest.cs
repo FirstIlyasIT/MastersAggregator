@@ -129,9 +129,9 @@ public class UserControllerTest
 
 static class StaticData
 {
-    //TestUser1 - уникальный юзер нет в Users
+    //TestUser1 - СѓРЅРёРєР°Р»СЊРЅС‹Р№ СЋР·РµСЂ РЅРµС‚ РІ Users
     public static User TestUser1 = new User { Id = 15, UserName = "Vadim", UserFirstName = "Sidor", UserPfone = "+745-34-34-153" };
-    //TestUser2 - есть в списке Users
+    //TestUser2 - РµСЃС‚СЊ РІ СЃРїРёСЃРєРµ Users
     public static User TestUser2 = new User { Id = 1, UserName = "Sasha", UserFirstName = "Smelov", UserPfone = "+745-88-11-222" };
 
     public static List<User> Users = new List<User>

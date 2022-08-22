@@ -54,14 +54,11 @@ public class UserController : BaseController<User>
     [HttpPost]
     public IActionResult CreateUser([FromBody] User user)
     {
-        var users = _repository.GetAll();
-
-        foreach (var userTemp in users)
-        {
-            if (userTemp.Id == user.Id)
-                return BadRequest();
-        }
-            
+        var users = _repository.GetAll(); 
+        //если user с таким id существует то не создаем его возращаем BadRequest()
+        if (users.Any(s => s.Id == user.Id))
+            return BadRequest();
+         
         _repository.Save(user);
         return NoContent(); 
     }

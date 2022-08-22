@@ -22,7 +22,7 @@ builder.Services.AddSwaggerGen(c =>
         Contact = new OpenApiContact
         {
             Name = "Your name",
-            Email = string.Empty,
+            Email = "In process",
             Url = new Uri("https://www.microsoft.com/learn")
         }
     });

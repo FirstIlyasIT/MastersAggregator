@@ -56,13 +56,10 @@ public class ImageController : BaseController<Image>
     [HttpPost]
     public IActionResult CreateImage([FromBody] Image image)
     {
-        var images = _repository.GetAll();
-         
-        foreach (var imageTemp in images)
-        {
-            if (imageTemp.Id == image.Id)
-                return BadRequest();
-        }
+        var images = _repository.GetAll(); 
+        //если image с таким id существует то не создаем его возращаем BadRequest()
+        if (images.Any(s => s.Id == image.Id))
+            return BadRequest();
 
         _repository.Save(image);
         return NoContent();
