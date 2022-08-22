@@ -5,18 +5,8 @@ namespace MastersAggregatorService.Repositories;
 
 public class MasterRepository : BaseRepository<Master>
 {
-    private static IEnumerable<Master> MastersList { get; set; }
-
-    static MasterRepository()
-    {
-        MastersList = new List<Master>
-        {
-            new Master(0, "Sergey", true),
-            new Master(1, "Roman", true),
-            new Master(2, "Ilyas", false)
-        };
-    }
-
+    private static IEnumerable<Master> MastersList { get; set; } // TODO: Временное решение для тестов, потом нужно заменить на DBConnection
+    
     public override Master GetById(int id)
     {
         return MastersList.FirstOrDefault(x => x.Id == id);
@@ -27,7 +17,7 @@ public class MasterRepository : BaseRepository<Master>
         return MastersList;
     }
 
-    public override IEnumerable<Master> GetByCondition(bool condition)
+    public virtual IEnumerable<Master> GetByCondition(bool condition) // TODO: временно виртуальный для прохождения тестов
     {
         return MastersList.Where(x => x.IsActive == condition).ToList();
     }
