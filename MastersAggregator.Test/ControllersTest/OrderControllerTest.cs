@@ -18,7 +18,8 @@ public  class OrderControllerTest
         // Arrange
         var repository = Substitute.For<OrderRepository>();
         repository.GetById(15).Returns(StaticDataOrder.TestOrder1);
-        var controller = new OrderController(repository);
+        var userRepository = Substitute.For<UserRepository>();
+        var controller = new OrderController(repository, userRepository);
         // Act
         var result = controller.GetOrder(15);
         // Assert
@@ -31,7 +32,8 @@ public  class OrderControllerTest
         // Arrange
         var repository = Substitute.For<OrderRepository>();
         repository.GetById(0).ReturnsNullForAnyArgs();
-        var controller = new OrderController(repository);
+        var userRepository = Substitute.For<UserRepository>();
+        var controller = new OrderController(repository, userRepository);
         // Act
         var result = controller.GetOrder(76);
         // Assert
@@ -45,7 +47,8 @@ public  class OrderControllerTest
         // Arrange
         var repository = Substitute.For<OrderRepository>();
         repository.GetAll().Returns(StaticDataOrder.Orders);
-        var controller = new OrderController(repository);
+        var userRepository = Substitute.For<UserRepository>();
+        var controller = new OrderController(repository, userRepository);
         // Act
         var resultGetUsers = controller.GetOrders();
         var expectedGetUsers = StaticData.Users;
@@ -59,7 +62,8 @@ public  class OrderControllerTest
         // Arrange
         var repository = Substitute.For<OrderRepository>();
         repository.GetById(15).Returns(StaticDataOrder.TestOrder1);
-        var controller = new OrderController(repository);
+        var userRepository = Substitute.For<UserRepository>();
+        var controller = new OrderController(repository, userRepository);
         // Act
         var resultDeleteUser = controller.DeleteOrder(15);
         // Assert
@@ -72,7 +76,8 @@ public  class OrderControllerTest
         // Arrange
         var repository = Substitute.For<OrderRepository>();
         repository.GetById(15).Returns(StaticDataOrder.TestOrder1);
-        var controller = new OrderController(repository);
+        var userRepository = Substitute.For<UserRepository>();
+        var controller = new OrderController(repository, userRepository);
         // Act
         var resultDeleteUser = controller.DeleteOrder(150);
         // Assert
@@ -86,7 +91,9 @@ public  class OrderControllerTest
         // Arrange
         var repository = Substitute.For<OrderRepository>();
         repository.GetAll().Returns(StaticDataOrder.Orders);
-        var controller = new OrderController(repository);
+        var userRepository = Substitute.For<UserRepository>();
+        userRepository.GetById(0).ReturnsForAnyArgs(StaticDataOrder.Sender);
+        var controller = new OrderController(repository, userRepository);
         // Act
         var resultDeleteUser = controller.CreateOrder(StaticDataOrder.TestOrder2);
         // Assert
@@ -100,7 +107,8 @@ public  class OrderControllerTest
         // Arrange
         var repository = Substitute.For<OrderRepository>();
         repository.GetAll().Returns(StaticDataOrder.Orders);
-        var controller = new OrderController(repository);
+        var userRepository = Substitute.For<UserRepository>();
+        var controller = new OrderController(repository, userRepository);
         // Act
         var resultDeleteUser = controller.CreateOrder(StaticDataOrder.TestOrder1);
         // Assert
@@ -114,6 +122,9 @@ public static class StaticDataOrder
     public static Order TestOrder1 = new Order { Id = 1, Sender = new User { Id = 1, UserName = "Антон", UserFirstName = "Быстрый", UserPfone = "+745-77-88-111" }, Images = new List<Image> { new Image { Id = 1, ImageUrl = "https://my-domen.com/conten/images/21325.ipg", ImageDescription = "описание работы: не закрываеться окно на фото видно проблему" } } };
     //TestOrder2 - нет в списке Orders
     public static Order TestOrder2 = new Order { Id = 8, Sender = new User { Id = 1, UserName = "Антон", UserFirstName = "Быстрый", UserPfone = "+745-77-88-111" }, Images = new List<Image> { new Image { Id = 15, ImageUrl = "https://my-domen.com/conten/images/7777.ipg", ImageDescription = "описание работы: не закрываеться фото" } } };
+
+    public static User Sender = new User
+        { Id = 1, UserName = "Антон", UserFirstName = "Быстрый", UserPfone = "+745-77-88-111" };
 
     public static List<Order> Orders = new List<Order>
     {

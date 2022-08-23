@@ -36,8 +36,7 @@ public class UserControllerTest
     {
         // Arrange
         var repository = Substitute.For<UserRepository>(); 
-        repository.GetAll().Returns(StaticData.Users); 
-    {
+        repository.GetAll().Returns(StaticData.Users);
         var controller = new UserController(repository); 
         // Act
         var resultGetUsers = controller.GetUsers();  
@@ -49,6 +48,7 @@ public class UserControllerTest
 
     [Test]
     public void DeleteUserOkResultTest()
+    {
         // Arrange
         var repository = Substitute.For<UserRepository>();
         repository.GetById(15).Returns(StaticData.TestUser1); 
@@ -59,6 +59,7 @@ public class UserControllerTest
         Assert.That((resultDeleteUser as StatusCodeResult).StatusCode, Is.EqualTo(204));
 
     }
+    
     [Test]
     public void DeleteUserBadResultTest()
     {
@@ -102,8 +103,8 @@ public class UserControllerTest
     public void UpdateUserOkResultTest()
     {
         // Arrange
-        repository.GetAll().Returns(StaticData.Users);
         var repository = Substitute.For<UserRepository>(); 
+        repository.GetAll().Returns(StaticData.Users);
         var controller = new UserController(repository);
         // Act
         var resultDeleteUser = controller.UpdateUser(StaticData.TestUser2);
