@@ -1,7 +1,6 @@
 using MastersAggregatorService.Repositories;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-//using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +25,7 @@ builder.Services.AddSwaggerGen(c =>
             Url = new Uri("https://www.microsoft.com/learn")
         }
     });
+builder.Services.AddCors(); // возможно следует удалить в будущем
 
     // Set the comments path for the Swagger JSON and UI.
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -38,6 +38,8 @@ builder.Services.AddScoped<ImageRepository>()
                 .AddScoped<UserRepository>()
                 .AddScoped<OrderRepository>();
 
+builder.Services.AddScoped<MasterRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -48,6 +50,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(policy => policy.AllowAnyMethod().AllowAnyMethod());
 
 app.UseAuthorization();
 
