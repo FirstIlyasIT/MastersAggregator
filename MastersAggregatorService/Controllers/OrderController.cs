@@ -13,9 +13,11 @@ namespace MastersAggregatorService.Controllers;
 public class OrderController : BaseController<Order>
 {
     private OrderRepository _repository { get; set; }
-    public OrderController(OrderRepository repository) 
+    private readonly UserRepository _userRepository;
+    public OrderController(OrderRepository repository, UserRepository userRepository) 
     {
         _repository = repository;
+        _userRepository = userRepository;
     }
 
     /// <summary>
@@ -87,8 +89,7 @@ public class OrderController : BaseController<Order>
             return BadRequest();
 
         //проверяем существует юзер с таким id если нет юзера то и order создать для него не можем 
-        UserRepository userRepository = new UserRepository();
-        if (userRepository.GetById(order.Sender.Id)== null)
+        if (_userRepository.GetById(order.Sender.Id)== null)
             return BadRequest();
 
 

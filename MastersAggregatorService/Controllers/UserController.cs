@@ -54,7 +54,7 @@ public class UserController : BaseController<User>
     public IActionResult CreateUser([FromBody]User user)
     {
         var users = _repository.GetAll();
-        if (users.Contains(user))
+        if (users.Any(u => u.Id == user.Id))
             return BadRequest();
         else
         {
@@ -65,18 +65,17 @@ public class UserController : BaseController<User>
     [HttpPut]
     public IActionResult UpdateUser([FromBody] User user)
     {
-        var users = _repository.GetAll();
+        var users = _repository.GetAll().ToList();
 
-        foreach (var userTemp in users)
+        if (users.Any(u => u.Id == user.Id))
         {
-            if (userTemp.Id == user.Id)
-            { 
-                DeleteUser(user.Id);
-                _repository.Save(user);
-            }
-                return NoContent();
-        } 
-        return BadRequest(); 
+            _repository.Save(user);
+            return NoContent();
+        }
+        else
+        {
+            return BadRequest(); 
+        }
     }
 
 }
