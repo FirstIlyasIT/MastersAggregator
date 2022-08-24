@@ -10,7 +10,7 @@ public class UserRepository : BaseRepository<User>
     {
         const string sqlQuery = "SELECT id AS Id, name AS Name, first_name AS FirstName, pfone AS Pfone " +
                                 "FROM master_shema.users";
-        var connection = new NpgsqlConnection(_connectionString);
+        var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
         var users = await connection.QueryAsync<User>(sqlQuery);
         await connection.CloseAsync();
