@@ -132,13 +132,13 @@ static class StaticData
 {
     //TestUser1 - уникальный юзер нет в Users
     //TestUser2 - есть в списке Users
-    public static User TestUser1 = new User { Id = 15, Name = "Vadim", FirstName = "Sidor", UserPfone = "+745-34-34-153" };
-    public static User TestUser2 = new User { Id = 1, Name = "Sasha", FirstName = "Smelov", UserPfone = "+745-88-11-222" };
+    public static User TestUser1 = new User { Id = 15, Name = "Vadim", FirstName = "Sidor", Pfone = "+745-34-34-153" };
+    public static User TestUser2 = new User { Id = 1, Name = "Sasha", FirstName = "Smelov", Pfone = "+745-88-11-222" };
 
     public static List<User> Users = new List<User>
     {
-        new User { Id = 0, Name = "Andrey", FirstName = "Sidorov", UserPfone = "+745-34-34-153" },
-        new User { Id = 1, Name = "Sasha",  FirstName = "Smelov",  UserPfone = "+745-88-11-222" }
+        new User { Id = 0, Name = "Andrey", FirstName = "Sidorov", Pfone = "+745-34-34-153" },
+        new User { Id = 1, Name = "Sasha",  FirstName = "Smelov",  Pfone = "+745-88-11-222" }
     };
 
 }

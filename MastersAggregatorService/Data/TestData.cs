@@ -7,9 +7,9 @@ public static class TestData
 {
     public static List<User> Users = new List<User>
     {
-        new User { Id = 0, Name = "Sergey", FirstName = "Sidorov", UserPfone = "+745-34-34-153" },
-        new User { Id = 1, Name = "Антон", FirstName = "Быстрый", UserPfone = "+745-77-88-111" },
-        new User { Id = 5, Name = "Kolia", FirstName = "Smelov", UserPfone = "+745-88-11-222" }
+        new User { Id = 0, Name = "Sergey", FirstName = "Sidorov", Pfone = "+745-34-34-153" },
+        new User { Id = 1, Name = "Антон", FirstName = "Быстрый", Pfone = "+745-77-88-111" },
+        new User { Id = 5, Name = "Kolia", FirstName = "Smelov", Pfone = "+745-88-11-222" }
     };
 
     public static List<Image> Images = new List<Image>
