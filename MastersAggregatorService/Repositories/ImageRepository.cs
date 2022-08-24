@@ -24,4 +24,8 @@ public class ImageRepository : BaseRepository<Image>
     {
         throw new NotImplementedException();
     }
+
+    public ImageRepository(IConfiguration configuration) : base(configuration)
+    {
+    }
 }

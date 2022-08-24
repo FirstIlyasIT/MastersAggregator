@@ -53,4 +53,8 @@ public class MasterRepository : BaseRepository<Master>
     {
         throw new NotImplementedException();
     }
+
+    public MasterRepository(IConfiguration configuration) : base(configuration)
+    {
+    }
 }

@@ -24,4 +24,8 @@ public class OrderRepository : BaseRepository<Order>
     {
         throw new NotImplementedException();
     }
+
+    public OrderRepository(IConfiguration configuration) : base(configuration)
+    {
+    }
 }

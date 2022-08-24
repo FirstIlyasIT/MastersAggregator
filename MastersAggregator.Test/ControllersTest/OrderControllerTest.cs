@@ -119,17 +119,17 @@ public  class OrderControllerTest
 public static class StaticDataOrder
 {
     //TestOrder1 - существует в списке Orders
-    public static Order TestOrder1 = new Order { Id = 1, Sender = new User { Id = 1, UserName = "Антон", UserFirstName = "Быстрый", UserPfone = "+745-77-88-111" }, Images = new List<Image> { new Image { Id = 1, ImageUrl = "https://my-domen.com/conten/images/21325.ipg", ImageDescription = "описание работы: не закрываеться окно на фото видно проблему" } } };
+    public static Order TestOrder1 = new Order { Id = 1, Sender = new User { Id = 1, Name = "Антон", FirstName = "Быстрый", UserPfone = "+745-77-88-111" }, Images = new List<Image> { new Image { Id = 1, ImageUrl = "https://my-domen.com/conten/images/21325.ipg", ImageDescription = "описание работы: не закрываеться окно на фото видно проблему" } } };
     //TestOrder2 - нет в списке Orders
-    public static Order TestOrder2 = new Order { Id = 8, Sender = new User { Id = 1, UserName = "Антон", UserFirstName = "Быстрый", UserPfone = "+745-77-88-111" }, Images = new List<Image> { new Image { Id = 15, ImageUrl = "https://my-domen.com/conten/images/7777.ipg", ImageDescription = "описание работы: не закрываеться фото" } } };
+    public static Order TestOrder2 = new Order { Id = 8, Sender = new User { Id = 1, Name = "Антон", FirstName = "Быстрый", UserPfone = "+745-77-88-111" }, Images = new List<Image> { new Image { Id = 15, ImageUrl = "https://my-domen.com/conten/images/7777.ipg", ImageDescription = "описание работы: не закрываеться фото" } } };
 
     public static User Sender = new User
-        { Id = 1, UserName = "Антон", UserFirstName = "Быстрый", UserPfone = "+745-77-88-111" };
+        { Id = 1, Name = "Антон", FirstName = "Быстрый", UserPfone = "+745-77-88-111" };
 
     public static List<Order> Orders = new List<Order>
     {
-        new Order {Id = 0, Sender = new User { Id = 0, UserName = "Sergey", UserFirstName = "Sidorov", UserPfone = "+745-34-34-153"}, Images = new List<Image> { new Image { Id = 3, ImageUrl = "https://my-domen.com/conten/images/27776.ipg", ImageDescription = "описание работы: перекос двери" }, new Image { Id = 2, ImageUrl = "https://my-domen.com/conten/images/21326.ipg", ImageDescription = "описание работы: перекос окна вид с другой стороны" } }},
-        new Order {Id = 1, Sender = new User { Id = 1, UserName = "Антон", UserFirstName = "Быстрый", UserPfone = "+745-77-88-111" }, Images = new List<Image> { new Image { Id = 1, ImageUrl = "https://my-domen.com/conten/images/21325.ipg", ImageDescription = "описание работы: не закрываеться окно на фото видно проблему" } }},
-        new Order {Id = 2, Sender = new User { Id = 2, UserName = "Kolia", UserFirstName = "Smelov", UserPfone = "+745-88-11-222" },  Images = new List<Image> { new Image { Id = 3, ImageUrl = "https://my-domen.com/conten/images/21224.ipg", ImageDescription = "описание работы: починить дверной замок - сломалс¤ ключ" }, new Image { Id = 4, ImageUrl = "https://my-domen.com/conten/images/2115.ipg", ImageDescription = "описание работы: на фото видно проблему" } }}
+        new Order {Id = 0, Sender = new User { Id = 0, Name = "Sergey", FirstName = "Sidorov", UserPfone = "+745-34-34-153"}, Images = new List<Image> { new Image { Id = 3, ImageUrl = "https://my-domen.com/conten/images/27776.ipg", ImageDescription = "описание работы: перекос двери" }, new Image { Id = 2, ImageUrl = "https://my-domen.com/conten/images/21326.ipg", ImageDescription = "описание работы: перекос окна вид с другой стороны" } }},
+        new Order {Id = 1, Sender = new User { Id = 1, Name = "Антон", FirstName = "Быстрый", UserPfone = "+745-77-88-111" }, Images = new List<Image> { new Image { Id = 1, ImageUrl = "https://my-domen.com/conten/images/21325.ipg", ImageDescription = "описание работы: не закрываеться окно на фото видно проблему" } }},
+        new Order {Id = 2, Sender = new User { Id = 2, Name = "Kolia", FirstName = "Smelov", UserPfone = "+745-88-11-222" },  Images = new List<Image> { new Image { Id = 3, ImageUrl = "https://my-domen.com/conten/images/21224.ipg", ImageDescription = "описание работы: починить дверной замок - сломалс¤ ключ" }, new Image { Id = 4, ImageUrl = "https://my-domen.com/conten/images/2115.ipg", ImageDescription = "описание работы: на фото видно проблему" } }}
     }; 
 }
