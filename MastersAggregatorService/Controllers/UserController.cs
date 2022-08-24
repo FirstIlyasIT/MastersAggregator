@@ -16,60 +16,92 @@ public class UserController : BaseController<User>
         _repository = repository;
     }
 
+    /// <summary>
+    /// GET user by id
+    /// </summary>
+    /// <param name="User's Id"></param>
+    /// <returns>User by id</returns>
+    /// <response code="200"> Returns user by id in Json format.</response>
+    /// <response code="404"> User does not exist.</response>
     [HttpGet("id")]
-    public IActionResult GetUser(int id)
+    public async Task<IActionResult> GetUserById(int id)
     {
-        var user = _repository.GetById(id);
+        var user = await _repository.GetByIdAsync(id);
         if (user is null)
             return NotFound();
         else
             return Ok(new JsonResult(user));
     }
 
+    /// <summary>
+    /// GET all users
+    /// </summary> 
+    /// <returns>List of all users in Json format</returns>
+    /// <response code="200"> Returns List of all users in Json format.</response>
+    /// <response code="404"> Users not found.</response>
     [HttpGet]
     [Route("all")]
-    public IActionResult GetUsers()
+    public async Task<IActionResult> GetAllUsers()
     {
-        var users = _repository.GetAll();
+        var users = await _repository.GetAllAsync();
         if (users.Any())
             return Ok(users);
         else
             return NotFound();
     }
 
+    /// <summary>
+    /// Delete user by id
+    /// </summary> 
+    /// <returns></returns>
+    /// <response code="204"> User deleted</response>
+    /// <response code="404"> User not found</response>
     [HttpDelete("id")]
-    public IActionResult DeleteUser(int id)
+    public async Task<IActionResult> DeleteUser(int id)
     {
-        var user = _repository.GetById(id);
+        var user = await _repository.GetByIdAsync(id);
         if (user is null)
             return BadRequest();
         else
         {
-            _repository.Delete(user);
+            await _repository.DeleteAsync(user);
             return NoContent();
         }
     }
 
+    /// <summary>
+    /// POST to create user
+    /// </summary> 
+    /// <returns></returns>
+    /// <response code="204"> User created</response>
+    /// <response code="404"> Invalid model</response>
     [HttpPost]
-    public IActionResult CreateUser([FromBody]User user)
+    public async Task<IActionResult> CreateUser([FromBody]User user)
     {
-        var users = _repository.GetAll();
+        var users = await _repository.GetAllAsync();
         if (users.Any(u => u.Id == user.Id))
             return BadRequest();
         else
         {
-            _repository.Save(user);
+            await _repository.SaveAsync(user);
             return NoContent();
         }
     }
+    
+    /// <summary>
+    /// PUT to update user
+    /// </summary> 
+    /// <returns></returns>
+    /// <response code="204"> User updated</response>
+    /// <response code="400"> Invalid model</response>
     [HttpPut]
-    public IActionResult UpdateUser([FromBody] User user)
+    public async Task<IActionResult> UpdateUser([FromBody] User user)
     {
-        var users = _repository.GetAll().ToList();
+        var users = await _repository.GetAllAsync();
 
         if (users.Any(u => u.Id == user.Id))
         {
-            _repository.Save(user);
+            await _repository.UpdateAsync(user);
             return NoContent();
         }
         else

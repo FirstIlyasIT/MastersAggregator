@@ -18,65 +18,90 @@ public class ImageController : BaseController<Image>
         _repository = repository;
     }
 
-
+    /// <summary>
+    /// GET image by id
+    /// </summary>
+    /// <param name="Image Id"></param>
+    /// <returns>Image by id</returns>
+    /// <response code="200"> Returns Image by id in Json format.</response>
+    /// <response code="404"> Image does not exist.</response>
     [HttpGet("id")]
-    public IActionResult GetImage(int id)
+    public async Task<IActionResult> GetImageById(int id)
     {
-        Image? image = _repository.GetById(id);
+        var image = await _repository.GetByIdAsync(id);
         if (image is null)
             return NotFound();
         else
-            return Ok(new JsonResult(image));
+             return Ok(new JsonResult(image));
     }
     
+    /// <summary>
+    /// GET all images
+    /// </summary> 
+    /// <returns>List of all images in Json format</returns>
+    /// <response code="200"> Returns List of all images in Json format.</response>
+    /// <response code="404"> Images not found.</response>
     [HttpGet]
     [Route("all")]
-    public IActionResult GetImages()
+    public async Task<IActionResult> GetAllImages()
     {
-        var images = _repository.GetAll();
+        var images = await _repository.GetAllAsync();
         if (images.Any())
             return Ok(images);
         else
             return NotFound();
     }
-
+    /// <summary>
+    /// Delete image by id
+    /// </summary> 
+    /// <returns></returns>
+    /// <response code="204"> Image deleted</response>
+    /// <response code="404"> Image not found</response>
     [HttpDelete("id")]
-    public IActionResult DeleteImage(int id)
+    public async Task<IActionResult> DeleteImage(int id)
     {
-        var image = _repository.GetById(id);
+        var image = await _repository.GetByIdAsync(id);
         if (image is null)
-            return BadRequest();
+            return NotFound();
         else
         {
-            _repository.Delete(image);
+            await _repository.DeleteAsync(image);
             return NoContent();
         }
     }
-
+    /// <summary>
+    /// POST to create image
+    /// </summary> 
+    /// <returns></returns>
+    /// <response code="204"> Image created</response>
+    /// <response code="404"> Invalid model</response>
     [HttpPost]
-    public IActionResult CreateImage([FromBody] Image image)
+    public async Task<IActionResult> CreateImage([FromBody] Image image)
     {
-        var images = _repository.GetAll(); 
-        //���� image � ����� id ���������� �� �� ������� ��� ��������� BadRequest()
+        var images = await _repository.GetAllAsync(); 
+        
         if (images.Any(s => s.Id == image.Id))
             return BadRequest();
 
-        _repository.Save(image);
+        await _repository.SaveAsync(image);
         return NoContent();
     }
+    
+    /// <summary>
+    /// PUT to update image
+    /// </summary> 
+    /// <returns></returns>
+    /// <response code="204"> Image updated</response>
+    /// <response code="400"> Invalid model</response>
     [HttpPut]
-    public IActionResult UpdateImage([FromBody] Image image)
+    public async Task<IActionResult> UpdateImage([FromBody] Image image)
     {
-        var Images = _repository.GetAll();
+        var images = await _repository.GetAllAsync();
 
-        foreach (var ImageTemp in Images)
+        if (images.Any(imageTemp => imageTemp.Id == image.Id))
         {
-            if (ImageTemp.Id == image.Id)
-            {
-                DeleteImage(image.Id);
-                _repository.Save(image);
-                return NoContent();
-            }
+            await _repository.UpdateAsync(image);
+            return NoContent();
         }
         return BadRequest();
     }
