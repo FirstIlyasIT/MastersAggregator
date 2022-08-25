@@ -20,6 +20,25 @@ public class OrderController : BaseController<Order>
         _userRepository = userRepository;
     }
 
+ 
+     
+    /// <summary>
+    /// GET all order
+    /// </summary> 
+    /// <returns>List of all Order</returns>  
+    /// <response code="200"> Returns List of all Order.</response>
+    [HttpGet]
+    [Route("all")]
+    public async Task<IActionResult> GetOrders()
+    {
+        var orders = await _repository.GetAllAsync();
+        if (orders.Any())
+            return Ok(orders);
+        else
+            return NotFound();
+    }
+
+
     /// <summary>
     /// GET by Id order
     /// </summary>
@@ -37,22 +56,7 @@ public class OrderController : BaseController<Order>
             return Ok(new JsonResult(order));
     }
 
-    /// <summary>
-    /// GET all order
-    /// </summary> 
-    /// <returns>List of all Order</returns>  
-    /// <response code="200"> Returns List of all Order.</response>
-    [HttpGet]
-    [Route("all")]
-    public IActionResult GetOrders()
-    {
-        var orders = _repository.GetAll();
-        if (orders.Any())
-            return Ok(orders);
-        else
-            return NotFound();
-    }
-     
+
     /// <summary>
     /// delete id order
     /// </summary> 

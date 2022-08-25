@@ -16,60 +16,52 @@ public class UserController : BaseController<User>
         _repository = repository;
     }
 
-    [HttpGet("id")]
-    public IActionResult GetUser(int id)
-    {
-        var user = _repository.GetById(id);
-        if (user is null)
-            return NotFound();
-        else
-            return Ok(new JsonResult(user));
-    }
 
     [HttpGet]
     [Route("all")]
-    public IActionResult GetUsers()
+    public async Task<IActionResult> GetUsers()
     {
-        var users = _repository.GetAll();
+        var users = await _repository.GetAllAsync();
         if (users.Any())
             return Ok(users);
         else
             return NotFound();
     }
 
-    [HttpDelete("id")]
-    public IActionResult DeleteUser(int id)
+
+    [HttpGet("id")]
+    public async Task<IActionResult> GetUser(int id)
     {
-        var user = _repository.GetById(id);
+        var user = await _repository.GetByIdAsync(id);
         if (user is null)
-            return BadRequest();
+            return NotFound();
         else
-        {
-            _repository.Delete(user);
-            return NoContent();
-        }
+            return Ok(new JsonResult(user));
     }
+     
 
     [HttpPost]
-    public IActionResult CreateUser([FromBody]User user)
+    public async Task<IActionResult> CreateUser([FromBody]User user)
     {
-        var users = _repository.GetAll();
+        var users = await _repository.GetAllAsync();
         if (users.Any(u => u.Id == user.Id))
             return BadRequest();
         else
         {
-            _repository.Save(user);
+            await _repository.SaveAsync(user);
             return NoContent();
         }
     }
+
+
     [HttpPut]
-    public IActionResult UpdateUser([FromBody] User user)
+    public async Task<IActionResult> UpdateUser([FromBody] User user)
     {
-        var users = _repository.GetAll().ToList();
+        var users = await _repository.GetAllAsync();
 
         if (users.Any(u => u.Id == user.Id))
         {
-            _repository.Save(user);
+            await _repository.UpdateAsync(user);
             return NoContent();
         }
         else
@@ -77,6 +69,19 @@ public class UserController : BaseController<User>
             return BadRequest(); 
         }
     }
+     
 
+    [HttpDelete("id")]
+    public async Task<IActionResult> DeleteUser(int id)
+    {
+        var user = await _repository.GetByIdAsync(id);
+        if (user is null)
+            return BadRequest();
+        else
+        {
+            await _repository.DeleteAsync(user);
+            return NoContent();
+        }
+    }
 }
  
