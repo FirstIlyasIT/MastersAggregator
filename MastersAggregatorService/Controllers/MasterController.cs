@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MastersAggregatorService.Controllers;
 
 [ApiController]
-[Route("{controller}")]
+[Route("api/[controller]/[action]")]
 [Produces("application/json")]
 [Consumes("application/json")]
 public class MasterController : BaseController<Master>
@@ -81,8 +81,7 @@ public class MasterController : BaseController<Master>
     /// </summary>
     /// <param name="master"></param>
     /// <returns></returns>
-    [HttpPost]
-    [Route("CreateMaster")]
+    [HttpPost] 
     public async Task<IActionResult> CreateMaster([FromBody] Master master)
     {
         await _repository.SaveAsync(master);
@@ -91,14 +90,13 @@ public class MasterController : BaseController<Master>
 
 
     /// <summary>
-    /// POST to change master's condition
+    /// PUT to change master's condition
     /// </summary>
     /// <param name="ObjectMaster"></param>
     /// <returns>Master with changed condition in Json format</returns>
     /// <response code="200"> Changes master's condition.</response>
     /// <response code="400"> Invalid master's model</response>
-    [HttpPut]
-    [Route("ChangeCondition")]
+    [HttpPut] 
     public async Task<IActionResult> ChangeCondition(Master master)
     {
         if (ModelState.IsValid)
