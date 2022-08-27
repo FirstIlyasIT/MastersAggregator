@@ -22,7 +22,7 @@ public class MasterControllerTest
         var controller = new MasterController(repository);
         
         // Act
-        var objectResultFromGetAll = controller.GetAll() as ObjectResult;
+        var objectResultFromGetAll = await controller.GetAll() as ObjectResult;
         
         var actualJson = objectResultFromGetAll.Value as JsonResult;
 
@@ -51,7 +51,7 @@ public class MasterControllerTest
         var controller = new MasterController(repository);
         
         // Act
-        var objectResultFromGetById = controller.GetById(modelId) as ObjectResult;
+        var objectResultFromGetById = await controller.GetById(modelId) as ObjectResult;
 
         var actualJson = objectResultFromGetById.Value as JsonResult;
 
@@ -78,7 +78,7 @@ public class MasterControllerTest
         var controller = new MasterController(repository);
         
         //Act
-        var objectResultFromGetByCondition = controller.GetByCondition(modelCondition) as ObjectResult;
+        var objectResultFromGetByCondition = await controller.GetByCondition(modelCondition) as ObjectResult;
 
         var actualJson = objectResultFromGetByCondition.Value as JsonResult;
 
@@ -105,7 +105,7 @@ public class MasterControllerTest
         var controller = new MasterController(repository);
         
         //Act
-        var result = controller.ChangeCondition(StaticData.testMaster);
+        var result = await controller.ChangeCondition(StaticData.testMaster);
         
         //Assert
         Assert.IsNotNull(result);
@@ -118,13 +118,13 @@ public class MasterControllerTest
 
 public static class StaticData
 {
-    public static Master testMaster = new (0, "Name0", true);
+    public static Master testMaster = new Master() {Id = 0, MastersName = "Name0", IsActive = true };
     
     public static IEnumerable<Master> Masters = new[]
     {
-        new Master(0, "Name0", true),
-        new Master(1, "Name1", false),
-        new Master(2, "Name2", true)
+        new Master(){Id = 0, MastersName = "Name0", IsActive = true },
+        new Master(){Id = 1, MastersName = "Name1", IsActive = false },
+        new Master(){Id = 2, MastersName = "Name2", IsActive = true }
     };
 
     public static IActionResult ReturnExpectedActionResult()

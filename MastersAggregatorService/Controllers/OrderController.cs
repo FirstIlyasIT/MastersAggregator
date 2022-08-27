@@ -47,9 +47,9 @@ public class OrderController : BaseController<Order>
     /// <response code="200"> Returns Order.</response>
     /// <response code="400"> Order id does not exist.</response>
     [HttpGet("id")]
-    public IActionResult GetOrder(int id)
+    public async Task<IActionResult> GetOrder(int id)
     {
-        var order = _repository.GetById(id);
+        var order = await _repository.GetByIdAsync(id);
         if (order is null)
             return NotFound();
         else
@@ -65,16 +65,16 @@ public class OrderController : BaseController<Order>
     /// <response code="200"> successfully deleted Order.</response>
     /// <response code="400"> failed to delete order, such id order does not exist.</response>
     [HttpDelete("id")]
-    public IActionResult DeleteOrder(int id)
+    public async Task<IActionResult> DeleteOrder(int id)
     {
-        var order = _repository.GetById(id);
+        var order = await _repository.GetByIdAsync(id);
         if (order is null)
             return BadRequest();
         else
         {
-            _repository.Delete(order);
+            await _repository.DeleteAsync(order);
             return NoContent();
-        }
+        } 
     }
 
     /// <summary>
@@ -85,19 +85,12 @@ public class OrderController : BaseController<Order>
     /// <response code="200"> create Order.</response>
     /// <response code="400"> I can't create an Order, such an Order already exists.</response> 
     [HttpPost]
-    public IActionResult CreateOrder([FromBody] Order order)
-    { 
-        var orders = _repository.GetAll(); 
-        //если order с таким id  существует то не создаем его возращаем BadRequest()
-        if (orders.Any(s => s.Id == order.Id))
+    public async Task<IActionResult> CreateOrder([FromBody] Order order)
+    {  
+        var result = await _repository.SaveAsync(order);
+        if (result == null)
             return BadRequest();
 
-        //проверяем существует юзер с таким id если нет юзера то и order создать для него не можем 
-        if (_userRepository.GetById(order.Sender.Id)== null)
-            return BadRequest();
-
-
-        _repository.Save(order);
         return NoContent(); 
     }
 }
