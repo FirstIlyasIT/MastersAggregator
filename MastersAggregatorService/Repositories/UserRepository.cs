@@ -4,7 +4,7 @@ using Npgsql;
 
 namespace MastersAggregatorService.Repositories;
 
-public class UserRepository : BaseRepository<User>
+public class UserRepository : BaseRepository<User>, IUserRepository
 {
     public async Task<IEnumerable<User>> GetAllAsync()
     {
@@ -17,7 +17,7 @@ public class UserRepository : BaseRepository<User>
         return users;
     }
 
-    public override IEnumerable<User> GetAll()
+    public IEnumerable<User> GetAll()
     {
         return GetAllAsync().Result;
     }
@@ -39,7 +39,7 @@ public class UserRepository : BaseRepository<User>
         return user;
     }
 
-    public override User? GetById(int id)
+    public User GetById(int id)
     {
         return GetByIdAsync(id).Result;
     }
@@ -57,7 +57,7 @@ public class UserRepository : BaseRepository<User>
         return model;
     }
 
-    public override User Save(User model)
+    public User Save(User model)
     {
         return SaveAsync(model).Result;
     }
@@ -73,7 +73,7 @@ public class UserRepository : BaseRepository<User>
     }
 
 
-    public override void Delete(User model)
+    public void Delete(User model)
     {
         DeleteAsync(model);
     }

@@ -10,8 +10,8 @@ namespace MastersAggregatorService.Controllers;
 [Consumes("application/json")]
 public class UserController : BaseController<User>
 {
-    private readonly UserRepository _repository;
-    public UserController(UserRepository repository)
+    private readonly IUserRepository _repository;
+    public UserController(IUserRepository repository)
     {
         _repository = repository;
     }
@@ -101,7 +101,7 @@ public class UserController : BaseController<User>
 
         if (users.Any(u => u.Id == user.Id))
         {
-            await _repository.UpdateAsync(user);
+            await _repository.SaveAsync(user);
             return NoContent();
         }
         else

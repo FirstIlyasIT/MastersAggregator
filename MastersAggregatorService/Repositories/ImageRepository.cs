@@ -1,5 +1,4 @@
 using Dapper;
-using MastersAggregatorService.Data;
 using MastersAggregatorService.Models;
 using Npgsql;
 
@@ -22,7 +21,7 @@ public class ImageRepository : BaseRepository<Image>
         return images;
     }
 
-    public override IEnumerable<Image> GetAll()
+    public IEnumerable<Image> GetAll()
     {
         return GetAllAsync().Result;
     }
@@ -43,7 +42,7 @@ public class ImageRepository : BaseRepository<Image>
         return image;
     }
 
-    public override Image GetById(int id)
+    public Image GetById(int id)
     {
         return GetByIdAsync(id).Result;
     }
@@ -61,7 +60,7 @@ public class ImageRepository : BaseRepository<Image>
         return model;
     }
 
-    public override Image Save(Image model)
+    public Image Save(Image model)
     {
         return SaveAsync(model).Result;
     }
@@ -76,7 +75,7 @@ public class ImageRepository : BaseRepository<Image>
         await connection.ExecuteAsync(sqlQuery, new {Id = model.Id});
     }
 
-    public override void Delete(Image model)
+    public void Delete(Image model)
     {
          DeleteAsync(model);
     }

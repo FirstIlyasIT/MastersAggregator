@@ -1,5 +1,4 @@
 using MastersAggregatorService.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace MastersAggregatorService.Repositories;
 
@@ -7,12 +6,12 @@ public class MasterRepository : BaseRepository<Master>
 {
     private static IEnumerable<Master> MastersList { get; set; } // TODO: Временное решение для тестов, потом нужно заменить на DBConnection
     
-    public override Master GetById(int id)
+    public Master GetById(int id)
     {
         return MastersList.FirstOrDefault(x => x.Id == id);
     }
 
-    public override IEnumerable<Master> GetAll()
+    public IEnumerable<Master> GetAll()
     {
         return MastersList;
     }
@@ -44,12 +43,12 @@ public class MasterRepository : BaseRepository<Master>
     /// </summary>
     /// <param name="model">Object to save</param>
     /// <returns>New object with database Id</returns>
-    public override Master Save(Master model)
+    public Master Save(Master model)
     {
         return model;
     }
 
-    public override void Delete(Master model)
+    public void Delete(Master model)
     {
         throw new NotImplementedException();
     }
