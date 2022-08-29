@@ -4,7 +4,7 @@ using Npgsql;
 
 namespace MastersAggregatorService.Repositories;
 
-public class ImageRepository : BaseRepository<Image>
+public class ImageRepository : BaseRepository<Image>, IImageRepository
 {
     public async Task<IEnumerable<Image>> GetAllAsync()
     {
@@ -91,6 +91,11 @@ public class ImageRepository : BaseRepository<Image>
         using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
         await connection.ExecuteAsync(sqlQuery, model);
+    }
+
+    public void Update(Image model)
+    {
+        UpdateAsync(model);
     }
 
     public ImageRepository(IConfiguration configuration) : base(configuration)

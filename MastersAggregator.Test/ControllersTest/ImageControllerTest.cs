@@ -2,6 +2,7 @@ using MastersAggregatorService.Controllers;
 using MastersAggregatorService.Models;
 using MastersAggregatorService.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
@@ -13,9 +14,10 @@ public class ImageControllerTest
     [Test]
     public async Task Get_Image_Ok_Result_Test()
     {
+        
         // Arrange
-        var repository = Substitute.For<ImageRepository>();
-        (await repository.GetByIdAsync(15)).Returns(StaticDataImage.TestImage1);
+        var repository = Substitute.For<IImageRepository>();
+        repository.GetByIdAsync(15).Returns(Task.FromResult(StaticDataImage.TestImage1));
         var controller = new ImageController(repository);
         // Act
         var result = await controller.GetImageById(15);
@@ -27,8 +29,8 @@ public class ImageControllerTest
     public async Task Get_Image_Bad_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<ImageRepository>();
-        (await repository.GetByIdAsync(15)).Returns(StaticDataImage.TestImage1);
+        var repository = Substitute.For<IImageRepository>();
+        repository.GetByIdAsync(15).Returns(Task.FromResult(StaticDataImage.TestImage1));
         var controller = new ImageController(repository);
         // Act
         var result = await controller.GetImageById(100);
@@ -41,8 +43,8 @@ public class ImageControllerTest
     public async Task Get_Images_Ok_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<ImageRepository>();
-        (await repository.GetAllAsync()).Returns(StaticDataImage.Images);
+        var repository = Substitute.For<IImageRepository>();
+        repository.GetAllAsync().Returns(StaticDataImage.Images);
         var controller = new ImageController(repository);
         // Act
         var result = await controller.GetAllImages();
@@ -55,8 +57,8 @@ public class ImageControllerTest
     public async Task Delete_Image_Ok_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<ImageRepository>();
-        (await repository.GetByIdAsync(15)).Returns(StaticDataImage.TestImage1);
+        var repository = Substitute.For<IImageRepository>();
+        repository.GetByIdAsync(15).Returns(Task.FromResult(StaticDataImage.TestImage1));
         var controller = new ImageController(repository);
         // Act
         var result = await controller.DeleteImage(15);
@@ -68,21 +70,21 @@ public class ImageControllerTest
     public async Task Delete_Image_Bad_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<ImageRepository>();
-        (await repository.GetByIdAsync(15)).Returns(StaticDataImage.TestImage1);
+        var repository = Substitute.For<IImageRepository>();
+        repository.GetByIdAsync(15).Returns(Task.FromResult(StaticDataImage.TestImage1));
         var controller = new ImageController(repository);
         // Act
         var result = await controller.DeleteImage(150);
         // Assert
-        Assert.That((result as StatusCodeResult).StatusCode, Is.EqualTo(400));
+        Assert.That((result as StatusCodeResult).StatusCode, Is.EqualTo(404));
     }
 
     [Test]
     public async Task Create_Image_Ok_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<ImageRepository>();
-        (await repository.GetAllAsync()).Returns(StaticDataImage.Images);
+        var repository = Substitute.For<IImageRepository>();
+        repository.GetAllAsync().Returns(Task.FromResult<IEnumerable<Image>>(StaticDataImage.Images));
         var controller = new ImageController(repository);
         // Act
         var result = await controller.CreateImage(StaticDataImage.TestImage1);
@@ -94,8 +96,8 @@ public class ImageControllerTest
     public async Task Create_User_Image_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<ImageRepository>();
-        (await repository.GetAllAsync()).Returns(StaticDataImage.Images);
+        var repository = Substitute.For<IImageRepository>();
+        repository.GetAllAsync().Returns(Task.FromResult<IEnumerable<Image>>(StaticDataImage.Images));
         var controller = new ImageController(repository);
         // Act
         var result = await controller.CreateImage(StaticDataImage.TestImage2);
@@ -107,8 +109,8 @@ public class ImageControllerTest
     public async Task Update_Image_Ok_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<ImageRepository>();
-        (await repository.GetAllAsync()).Returns(StaticDataImage.Images);
+        var repository = Substitute.For<IImageRepository>();
+        repository.GetAllAsync().Returns(Task.FromResult<IEnumerable<Image>>(StaticDataImage.Images));
         var controller = new ImageController(repository);
         // Act
         var result = await controller.UpdateImage(StaticDataImage.TestImage2);
@@ -120,8 +122,8 @@ public class ImageControllerTest
     public async Task Update_Image_Bad_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<ImageRepository>();
-        (await repository.GetAllAsync()).Returns(StaticDataImage.Images);
+        var repository = Substitute.For<IImageRepository>();
+        repository.GetAllAsync().Returns(Task.FromResult<IEnumerable<Image>>(StaticDataImage.Images));
         var controller = new ImageController(repository);
         // Act
         var result = await controller.UpdateImage(StaticDataImage.TestImage1);

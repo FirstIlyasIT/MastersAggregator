@@ -12,8 +12,8 @@ namespace MastersAggregatorService.Controllers;
 [Consumes("application/json")]
 public class ImageController : BaseController<Image> 
 { 
-    private ImageRepository _repository { get; set; }
-    public ImageController(ImageRepository repository)
+    private IImageRepository _repository { get; set; }
+    public ImageController(IImageRepository repository)
     {
         _repository = repository;
     }
