@@ -1,15 +1,16 @@
 using Dapper;
 using MastersAggregatorService.Models;
 using Npgsql;
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Nodes;
 
 namespace MastersAggregatorService.Repositories;
  
 
-public class OrderRepository : BaseRepository<Order>
+public class OrderRepository : BaseRepository<Order>, IOrderRepository
 {
+    public OrderRepository(IConfiguration configuration) : base(configuration)
+    {
+    }
+
     /// <summary>
     /// Получить список всех Order (Async)
     /// </summary>
@@ -53,13 +54,15 @@ public class OrderRepository : BaseRepository<Order>
 
             Orders.Add(order);
         }
-          
-        //await connection.CloseAsync(); 
-      
+            
       return Orders;
     }
-     
-    public override IEnumerable<Order> GetAll()
+
+    /// <summary>
+    /// Получить список всех Order  
+    /// </summary>
+    /// <returns></returns>   
+    public IEnumerable<Order> GetAll()
     {
         return GetAllAsync().Result;
     }
@@ -117,8 +120,13 @@ public class OrderRepository : BaseRepository<Order>
             return null;
         }
     }
-      
-    public override Order GetById(int id)
+
+    /// <summary>
+    /// Получить обьект Order по его id 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns> 
+    public Order GetById(int id)
     {
         return GetByIdAsync(id).Result;
     }
@@ -166,7 +174,7 @@ public class OrderRepository : BaseRepository<Order>
                 catch (Exception)
                 { 
                 } 
-            }
+            } 
 
             return model;
         }
@@ -175,15 +183,20 @@ public class OrderRepository : BaseRepository<Order>
             return null;
         }
     }
-     
-    public override Order Save(Order model)
+
+    /// <summary>
+    /// Добавить новый Order  
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    public Order Save(Order model)
     {
         return SaveAsync(model).Result;
     }
 
 
     /// <summary>
-    /// Удалить из БД Order
+    /// Удалить из БД Order (Async)
     /// </summary>
     /// <param name="model"></param>
     /// <returns></returns>
@@ -198,13 +211,13 @@ public class OrderRepository : BaseRepository<Order>
         await connection.ExecuteAsync(sqlQuery, new { orderId });
     }
 
-
-    public override void Delete(Order model)
+    /// <summary>
+    /// Удалить из БД Order
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    public void Delete(Order model)
     {
         DeleteAsync(model);
-    }
-
-    public OrderRepository(IConfiguration configuration) : base(configuration)
-    {
-    }
+    } 
 }

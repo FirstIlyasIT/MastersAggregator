@@ -13,112 +13,85 @@ public class MasterControllerTest
 {
     [Test]
     public async Task GetAllTest()
-    {
+    { 
         // Arrange
-        var repository = Substitute.For<MasterRepository>();
-        
-        repository.GetAll().Returns(StaticData.Masters);
-        
-        var controller = new MasterController(repository);
-        
-        // Act
-        var objectResultFromGetAll = await controller.GetAll() as ObjectResult;
-        
-        var actualJson = objectResultFromGetAll.Value as JsonResult;
-
         var expectedJson = StaticData.ReturnExpectedActionResult() as JsonResult;
-        
+        var repository = Substitute.For<IMasterRepository>();
+        repository.GetAllAsync().Returns(StaticData.Masters);
+        var controller = new MasterController(repository);
+        // Act
+        var objectResultFromGetAllTest = await controller.GetAll();
         // Assert
-        Assert.That(actualJson, Is.Not.Null);
-        
-        Assert.That(objectResultFromGetAll.StatusCode, Is.EqualTo(200));
+        Assert.That(objectResultFromGetAllTest, Is.Not.Null); 
+        Assert.That(objectResultFromGetAllTest, Is.InstanceOf<OkObjectResult>());
+        Assert.That((objectResultFromGetAllTest as ObjectResult).Value, Is.EqualTo(expectedJson.Value));
 
-        Assert.That(actualJson.Value, Is.EqualTo(expectedJson.Value));
     }
 
     [Test]
     public async Task GetByIdTest()
     {
         // Arrange
-        var repository = Substitute.For<MasterRepository>();
-
-        var random = Random.Shared;
-
-        var modelId = random.Next(0, StaticData.Masters.Count() - 1);
-        
-        repository.GetById(modelId).Returns(StaticData.Masters.FirstOrDefault(x => x.Id == modelId));
-        
-        var controller = new MasterController(repository);
-        
+        var repository = Substitute.For<IMasterRepository>();  
+        repository.GetByIdAsync(1).Returns(Task.FromResult(StaticData.testMaster));
+        var controller = new MasterController(repository); 
         // Act
-        var objectResultFromGetById = await controller.GetById(modelId) as ObjectResult;
-
-        var actualJson = objectResultFromGetById.Value as JsonResult;
-
-        var expectedJson = StaticData.ReturnExpectedActionResultById(modelId) as JsonResult;
-
-        // Assert
-        Assert.That(actualJson, Is.Not.Null);
-        
-        Assert.That(objectResultFromGetById.StatusCode, Is.EqualTo(200));
-
-        Assert.That(actualJson.Value, Is.EqualTo(expectedJson.Value));
+        var objectResultFromGetById = await controller.GetById(1);
+        // Assert 
+        Assert.That((objectResultFromGetById as ObjectResult).Value, Is.Not.Null);
+        Assert.That(objectResultFromGetById, Is.InstanceOf<OkObjectResult>());
     }
 
     [Test]
     public async Task GetByConditionTest()
     {
         // Arrange
-        var repository = Substitute.For<MasterRepository>();
-
+        var repository = Substitute.For<IMasterRepository>();
         var modelCondition = false;
-
-        repository.GetByCondition(modelCondition).Returns(StaticData.Masters.Where(x => x.IsActive == modelCondition));
-        
+        repository.GetByConditionAsync(modelCondition).Returns(StaticData.Masters.Where(x => x.IsActive == modelCondition));      
         var controller = new MasterController(repository);
         
         //Act
-        var objectResultFromGetByCondition = await controller.GetByCondition(modelCondition) as ObjectResult;
-
-        var actualJson = objectResultFromGetByCondition.Value as JsonResult;
-
+        var objectResultFromGetByCondition = await controller.GetByCondition(modelCondition) as ObjectResult; 
         var expectedJson = StaticData.ReturnExpectedActionResultByCondition(modelCondition) as JsonResult;
-        
-        
+         
         //Assert
-        Assert.That(actualJson, Is.Not.Null);
-        
+        Assert.That(objectResultFromGetByCondition, Is.Not.Null);        
         Assert.That(objectResultFromGetByCondition.StatusCode, Is.EqualTo(200));
-
-        Assert.That(actualJson.Value, Is.EqualTo(expectedJson.Value));
+        Assert.That(objectResultFromGetByCondition.Value, Is.EqualTo(expectedJson.Value));
     }
 
     [Test]
-    public async Task ChangeConditionOkResultTest()
+    public async Task UpdateMasterTest()
     {
         // Arrange
-        var repository = Substitute.For<MasterRepository>();
-        
-        repository.ChangeCondition(StaticData.testMaster)
-            .Returns(StaticData.testMaster);
-        
+        var repository = Substitute.For<IMasterRepository>();   
+        repository.GetAllAsync().Returns(StaticData.Masters);
         var controller = new MasterController(repository);
-        
-        //Act
-        var result = await controller.ChangeCondition(StaticData.testMaster);
-        
-        //Assert
-        Assert.IsNotNull(result);
-        
-        Assert.That(result, Is.InstanceOf<OkResult>());
+        //Act 
+        var objectResultFromUpdateMaster = await controller.UpdateMaster(StaticData.testMaster);
+        //Assert 
+        Assert.That((objectResultFromUpdateMaster as StatusCodeResult).StatusCode, Is.EqualTo(204));
     }
 
+    [Test]
+    public async Task DeleteMastertTest()
+    {
+        // Arrange
+        var repository = Substitute.For<IMasterRepository>();
+        repository.GetByIdAsync(1).Returns(Task.FromResult(StaticData.testMaster));
+        // Act
+        var controller = new MasterController(repository);
+        var resultDeleteUser = await controller.DeleteMaster(1);
+        // Assert
+        Assert.That((resultDeleteUser as StatusCodeResult).StatusCode, Is.EqualTo(204));
 
+    }
 }
 
 public static class StaticData
 {
-    public static Master testMaster = new Master() {Id = 0, MastersName = "Name0", IsActive = true };
+    public static Master testMaster = new Master() { Id = 1, MastersName = "Name1", IsActive = false };
     
     public static IEnumerable<Master> Masters = new[]
     {

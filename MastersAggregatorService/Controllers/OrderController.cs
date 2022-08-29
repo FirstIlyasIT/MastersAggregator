@@ -1,7 +1,6 @@
 using MastersAggregatorService.Models;
 using MastersAggregatorService.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
  
 
 namespace MastersAggregatorService.Controllers;
@@ -12,16 +11,13 @@ namespace MastersAggregatorService.Controllers;
 [Consumes("application/json")]
 public class OrderController : BaseController<Order>
 {
-    private OrderRepository _repository { get; set; }
-    private readonly UserRepository _userRepository;
-    public OrderController(OrderRepository repository, UserRepository userRepository) 
+    private readonly IOrderRepository _repository; 
+    public OrderController(IOrderRepository repository) 
     {
-        _repository = repository;
-        _userRepository = userRepository;
+        _repository = repository; 
     }
-
  
-     
+    
     /// <summary>
     /// GET all order
     /// </summary> 
@@ -76,6 +72,7 @@ public class OrderController : BaseController<Order>
             return NoContent();
         } 
     }
+
 
     /// <summary>
     /// Add new Order. 

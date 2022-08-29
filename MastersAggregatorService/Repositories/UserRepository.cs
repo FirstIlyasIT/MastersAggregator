@@ -4,8 +4,12 @@ using Npgsql;
 
 namespace MastersAggregatorService.Repositories;
 
-public class UserRepository : BaseRepository<User>
-{ 
+public class UserRepository : BaseRepository<User>, IUserRepository
+{
+    public UserRepository(IConfiguration configuration) : base(configuration)
+    {
+    }
+
     /// <summary>
     /// Получить список всех User (Async)
     /// </summary>
@@ -20,10 +24,15 @@ public class UserRepository : BaseRepository<User>
         return users;
     }
 
-    public override IEnumerable<User> GetAll()
+    /// <summary>
+    /// Получить список всех User  
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerable<User> GetAll()
     {
         return GetAllAsync().Result;
     }
+
 
     /// <summary>
     /// Получить обьект User по его id (Async)
@@ -45,9 +54,14 @@ public class UserRepository : BaseRepository<User>
         { 
             return null;
         } 
-    } 
- 
-    public override User? GetById(int id)
+    }
+
+    /// <summary>
+    /// Получить обьект User по его id  
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns> 
+    public User? GetById(int id)
     {
         return GetByIdAsync(id).Result;
     }
@@ -78,13 +92,17 @@ public class UserRepository : BaseRepository<User>
             return null;
         }
     }
- 
-    public override User Save(User model)
+
+    /// <summary>
+    /// Добавить нового юзера 
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    public User Save(User model)
     {
         return SaveAsync(model).Result;
     }
-
-
+ 
 
     /// <summary>
     /// Обновить User 
@@ -104,11 +122,9 @@ public class UserRepository : BaseRepository<User>
         await connection.ExecuteAsync(sqlQuery, new { userName, userFirstName, userPfone, userId });
     }
 
-  
- 
 
     /// <summary>
-    /// Удалить из БД User
+    /// Удалить из БД User (Async)
     /// </summary>
     /// <param name="model"></param>
     /// <returns></returns>
@@ -121,15 +137,14 @@ public class UserRepository : BaseRepository<User>
 
         await connection.ExecuteAsync(sqlQuery, new { userId }); 
     }
-  
-    public override void Delete(User model)
+
+    /// <summary>
+    /// Удалить из БД User
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    public void Delete(User model)
     {
         DeleteAsync(model);
-    }
-
-
-
-    public UserRepository(IConfiguration configuration) : base(configuration)
-    {
-    }
+    } 
 }

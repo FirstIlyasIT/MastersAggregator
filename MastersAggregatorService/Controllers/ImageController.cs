@@ -6,14 +6,13 @@ namespace MastersAggregatorService.Controllers;
 
 
 [ApiController]
-//[Route("{controller}")]
 [Route("api/[controller]/[action]")]
 [Produces("application/json")]
 [Consumes("application/json")]
 public class ImageController : BaseController<Image> 
 { 
-    private ImageRepository _repository { get; set; }
-    public ImageController(ImageRepository repository)
+    private IImageRepository _repository { get; set; }
+    public ImageController(IImageRepository repository)
     {
         _repository = repository;
     }
@@ -29,6 +28,7 @@ public class ImageController : BaseController<Image>
             return Ok(new JsonResult(image));
     }
     
+
     [HttpGet]
     [Route("all")]
     public IActionResult GetImages()
@@ -39,6 +39,7 @@ public class ImageController : BaseController<Image>
         else
             return NotFound();
     }
+
 
     [HttpDelete("id")]
     public IActionResult DeleteImage(int id)
@@ -53,17 +54,19 @@ public class ImageController : BaseController<Image>
         }
     }
 
+
     [HttpPost]
     public IActionResult CreateImage([FromBody] Image image)
     {
         var images = _repository.GetAll(); 
-        //���� image � ����� id ���������� �� �� ������� ��� ��������� BadRequest()
         if (images.Any(s => s.Id == image.Id))
             return BadRequest();
 
         _repository.Save(image);
         return NoContent();
     }
+
+
     [HttpPut]
     public IActionResult UpdateImage([FromBody] Image image)
     {

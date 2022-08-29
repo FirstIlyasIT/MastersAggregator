@@ -14,29 +14,37 @@ public class UserControllerTest
     [Test]
     public async Task GetByIdOkResultTest()
     {
-        var repository = Substitute.For<UserRepository>();
-        repository.GetById(15).Returns(StaticData.TestUser1);
+        // Arrange
+        var repository = Substitute.For<IUserRepository>();
+        repository.GetByIdAsync(15).Returns(Task.FromResult(StaticData.TestUser1));
         var controller = new UserController(repository);
+        // Act
         var result = await controller.GetUser(15);
+        // Assert
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
     }
-    
+
+
     [Test]
     public async Task GetByIdBadResultTest()
     {
-        var repository = Substitute.For<UserRepository>();
-        repository.GetById(0).ReturnsNullForAnyArgs();
+        // Arrange
+        var repository = Substitute.For<IUserRepository>();
+        repository.GetByIdAsync(0).ReturnsNullForAnyArgs();
         var controller = new UserController(repository);
+        // Act
         var result = await controller.GetUser(76);
+        // Assert
         Assert.That(result, Is.InstanceOf<NotFoundResult>());
     }
+
 
     [Test]
     public async Task GetUsersOkResultTest()
     {
         // Arrange
-        var repository = Substitute.For<UserRepository>(); 
-        repository.GetAll().Returns(StaticData.Users);
+        var repository = Substitute.For<IUserRepository>(); 
+        repository.GetAllAsync().Returns(StaticData.Users);
         var controller = new UserController(repository); 
         // Act
         var resultGetUsers = await controller.GetUsers();  
@@ -46,12 +54,13 @@ public class UserControllerTest
         Assert.That((resultGetUsers as ObjectResult).Value, Is.EqualTo(expectedGetUsers));
     }
 
+
     [Test]
     public async Task DeleteUserOkResultTest()
     {
         // Arrange
-        var repository = Substitute.For<UserRepository>();
-        repository.GetById(15).Returns(StaticData.TestUser1); 
+        var repository = Substitute.For<IUserRepository>();
+        repository.GetByIdAsync(15).Returns(StaticData.TestUser1); 
         var controller = new UserController(repository);
         // Act
         var resultDeleteUser = await controller.DeleteUser(15); 
@@ -60,12 +69,13 @@ public class UserControllerTest
 
     }
     
+
     [Test]
     public async Task DeleteUserBadResultTest()
     {
         // Arrange
-        var repository = Substitute.For<UserRepository>();
-        repository.GetById(15).Returns(StaticData.TestUser1);
+        var repository = Substitute.For<IUserRepository>();
+        repository.GetByIdAsync(15).Returns(StaticData.TestUser1);
         // Act
         var controller = new UserController(repository);
         var resultDeleteUser = await controller.DeleteUser(150);
@@ -73,12 +83,14 @@ public class UserControllerTest
         Assert.That((resultDeleteUser as StatusCodeResult).StatusCode, Is.EqualTo(400)); 
 
     }
+
+
     [Test]
     public async Task CreateUserOkResultTest()
     {
         // Arrange
-        var repository = Substitute.For<UserRepository>();
-        repository.GetAll().Returns(StaticData.Users);
+        var repository = Substitute.For<IUserRepository>();
+        repository.GetAllAsync().Returns(StaticData.Users);
         var controller = new UserController(repository);
         // Act
         var resultDeleteUser = await controller.CreateUser(StaticData.TestUser1);
@@ -86,12 +98,13 @@ public class UserControllerTest
         Assert.That((resultDeleteUser as StatusCodeResult).StatusCode, Is.EqualTo(204));
     }
 
+
     [Test]
     public async Task CreateUserBadResultTest()
     {
         // Arrange
-        var repository = Substitute.For<UserRepository>();
-        repository.GetAll().Returns(StaticData.Users);
+        var repository = Substitute.For<IUserRepository>();
+        repository.GetAllAsync().Returns(StaticData.Users);
         var controller = new UserController(repository);
         // Act
         var resultDeleteUser = await controller.CreateUser(StaticData.TestUser2);
@@ -99,12 +112,13 @@ public class UserControllerTest
         Assert.That((resultDeleteUser as StatusCodeResult).StatusCode, Is.EqualTo(400));
     }
 
+
     [Test]
     public async Task UpdateUserOkResultTest()
     {
         // Arrange
-        var repository = Substitute.For<UserRepository>(); 
-        repository.GetAll().Returns(StaticData.Users);
+        var repository = Substitute.For<IUserRepository>(); 
+        repository.GetAllAsync().Returns(StaticData.Users);
         var controller = new UserController(repository);
         // Act
         var resultDeleteUser = await controller.UpdateUser(StaticData.TestUser2);
@@ -112,19 +126,19 @@ public class UserControllerTest
         Assert.That((resultDeleteUser as StatusCodeResult).StatusCode, Is.EqualTo(204));
     }
 
+
     [Test]
     public async Task UpdateUserBadResultTest()
         // Arrange
     {
-        var repository = Substitute.For<UserRepository>(); 
+        var repository = Substitute.For<IUserRepository>(); 
         var controller = new UserController(repository);
-        repository.GetAll().Returns(StaticData.Users);
+        repository.GetAllAsync().Returns(StaticData.Users);
         // Act
         var resultDeleteUser = await controller.UpdateUser(StaticData.TestUser1);
         // Assert
         Assert.That((resultDeleteUser as StatusCodeResult).StatusCode, Is.EqualTo(400));
-    }
- 
+    } 
 }
 
 

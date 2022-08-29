@@ -4,8 +4,8 @@ using Npgsql;
 
 namespace MastersAggregatorService.Repositories;
 
-public class MasterRepository : BaseRepository<Master>
-{  
+public class MasterRepository : BaseRepository<Master>, IMasterRepository
+{
     public MasterRepository(IConfiguration configuration) : base(configuration)
     {
     }
@@ -20,12 +20,15 @@ public class MasterRepository : BaseRepository<Master>
         
         using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
-        
         var masters = await connection.QueryAsync<Master>(sqlQuery); 
         return masters;
     }
 
-    public override IEnumerable<Master> GetAll()
+    /// <summary>
+    /// Get a list of all masters  
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerable<Master> GetAll()
     {
         return GetAllAsync().Result;
     }
@@ -54,36 +57,40 @@ public class MasterRepository : BaseRepository<Master>
         }
     }
 
+    /// <summary>
+    /// Get the Master object by its id  
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns> 
+    public Master? GetById(int id)
+    {
+        return GetByIdAsync(id).Result;
+    }
+
 
     /// <summary>
     /// Returns a list of all masters in free(true) busy(false) status (async method)
     /// </summary>
     /// <param name="condition"></param>
     /// <returns></returns>    
-    public async Task<IEnumerable<Master>> GetByCondition(bool condition) // TODO: временно виртуальный для прохождения тестов
+    public async Task<IEnumerable<Master>> GetByConditionAsync(bool condition) // TODO: временно виртуальный для прохождения тестов
     {
         string sqlQuery = $"SELECT id AS Id, name AS MastersName, is_active AS IsActive FROM master_shema.masters WHERE is_active = '{condition}' ";
         
         using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
-        
+
         var masters = await connection.QueryAsync<Master>(sqlQuery, new { condition }); 
         return masters;
     }
 
-    public override Master? GetById(int id)
-    {
-        return GetByIdAsync(id).Result;
-    }
-
-
 
     /// <summary>
-    /// Changes model condition and returns it back (async)
+    /// Changes Master condition and returns it back (async)
     /// </summary>
     /// <param name="model">Object to save</param>
     /// <returns>New object with database Id</returns>
-    public async Task<Master> ChangeCondition(Master model)
+    public async Task<Master> UpdateAsync(Master model)
     { 
         string sqlQuery = "UPDATE master_shema.masters SET is_active = @isActive, name = @masterName   WHERE id = @masterId";  
         int masterId = model.Id;
@@ -105,9 +112,8 @@ public class MasterRepository : BaseRepository<Master>
     }
 
 
-
     /// <summary>
-    /// Saves a new object or updates if exist (async)
+    /// Saves a new Master or updates if exist (async)
     /// </summary>
     /// <param name="model"></param>
     /// <returns>New object</returns>
@@ -130,16 +136,16 @@ public class MasterRepository : BaseRepository<Master>
             return null;
         }
     }
+
     /// <summary>
-    /// Saves a new object or updates if exist
+    /// Saves a new Master or updates if exist
     /// </summary>
     /// <param name="model">Object to save</param>
     /// <returns>New object</returns>
-    public override Master Save(Master model)
+    public Master Save(Master model)
     {
         return SaveAsync(model).Result; 
     }
-
 
 
     /// <summary>
@@ -158,9 +164,13 @@ public class MasterRepository : BaseRepository<Master>
         await connection.ExecuteAsync(sqlQuery, new { intIdMaster });
     }
 
-    public override void Delete(Master model)
+    /// <summary>
+    /// Delete 
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    public void Delete(Master model)
     {
         DeleteAsync(model);
-    }
-
+    } 
 }

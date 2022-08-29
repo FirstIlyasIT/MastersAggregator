@@ -34,10 +34,10 @@ builder.Services.AddCors(); // возможно следует удалить в
 });
 
 //Добавили в сервис наши Repository 
-builder.Services.AddScoped<ImageRepository>()
-                .AddScoped<UserRepository>()
-                .AddScoped<OrderRepository>()
-                .AddScoped<MasterRepository>();
+builder.Services.AddScoped<IImageRepository, ImageRepository>()
+                .AddScoped<IUserRepository, UserRepository>()
+                .AddScoped<IOrderRepository, OrderRepository>()
+                .AddScoped<IMasterRepository, MasterRepository>();
 
 var app = builder.Build();
 

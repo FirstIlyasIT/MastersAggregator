@@ -10,13 +10,13 @@ namespace MastersAggregatorService.Controllers;
 [Consumes("application/json")]
 public class MasterController : BaseController<Master>
 {
-    private readonly MasterRepository _repository;
+    private readonly IMasterRepository _repository;
 
-    public MasterController(MasterRepository repository)
+    public MasterController(IMasterRepository repository)
     {
         _repository = repository;
     }
-
+ 
     /// <summary>
     /// GET all masters
     /// </summary> 
@@ -50,7 +50,7 @@ public class MasterController : BaseController<Master>
             return NotFound();
         }
 
-        return Ok(new JsonResult(master));
+        return Ok(master);
     }
 
 
@@ -64,10 +64,10 @@ public class MasterController : BaseController<Master>
     [HttpGet("{condition:bool}")]
     public async Task<IActionResult> GetByCondition(bool condition)
     {
-        var masters = await _repository.GetByCondition(condition);
+        var masters = await _repository.GetByConditionAsync(condition);
         if (masters.Any())
         {
-            return Ok(new JsonResult(masters));
+            return Ok(masters);
         }
         else
         {
@@ -75,7 +75,7 @@ public class MasterController : BaseController<Master>
         }
     }
 
-
+     
     /// <summary>
     /// Create new master's
     /// </summary>
@@ -90,25 +90,28 @@ public class MasterController : BaseController<Master>
 
 
     /// <summary>
-    /// PUT to change master's condition
+    /// PUT to change master's 
     /// </summary>
     /// <param name="ObjectMaster"></param>
     /// <returns>Master with changed condition in Json format</returns>
     /// <response code="200"> Changes master's condition.</response>
     /// <response code="400"> Invalid master's model</response>
     [HttpPut] 
-    public async Task<IActionResult> ChangeCondition(Master master)
+    public async Task<IActionResult> UpdateMaster(Master master)
     {
-        if (ModelState.IsValid)
+        var masters = await _repository.GetAllAsync();
+
+        if (masters.Any(u => u.Id == master.Id))
         {
-            await _repository.ChangeCondition(master);
-            return Ok();
+            await _repository.UpdateAsync(master);
+            return NoContent();
         }
         else
         {
             return BadRequest();
         }
     }
+
 
     /// <summary>
     /// Delete Master

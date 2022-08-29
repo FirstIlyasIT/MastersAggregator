@@ -10,8 +10,8 @@ namespace MastersAggregatorService.Controllers;
 [Consumes("application/json")]
 public class UserController : BaseController<User>
 {
-    private readonly UserRepository _repository;
-    public UserController(UserRepository repository)
+    private readonly IUserRepository _repository;
+    public UserController(IUserRepository repository)
     {
         _repository = repository;
     }

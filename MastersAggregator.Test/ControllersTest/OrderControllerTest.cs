@@ -16,39 +16,38 @@ public  class OrderControllerTest
     public async Task GetOrder_Ok_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<OrderRepository>();
-        repository.GetById(15).Returns(StaticDataOrder.TestOrder1);
-        var userRepository = Substitute.For<UserRepository>();
-        var controller = new OrderController(repository, userRepository);
+        var repository = Substitute.For<IOrderRepository>();
+        repository.GetByIdAsync(15).Returns(StaticDataOrder.TestOrder1);
+       // var userRepository = Substitute.For<UserRepository>();
+        var controller = new OrderController(repository);
         // Act
         var result = await controller.GetOrder(15);
         // Assert
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
     }
 
+
     [Test]
     public async Task GetOrder_Bad_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<OrderRepository>();
-        repository.GetById(0).ReturnsNullForAnyArgs();
-        var userRepository = Substitute.For<UserRepository>();
-        var controller = new OrderController(repository, userRepository);
+        var repository = Substitute.For<IOrderRepository>();
+        repository.GetByIdAsync(0).ReturnsNullForAnyArgs(); 
+        var controller = new OrderController(repository);
         // Act
         var result = await controller.GetOrder(76);
         // Assert
         Assert.That(result, Is.InstanceOf<NotFoundResult>());
     }
-
+     
 
     [Test]
     public async Task GetOrders_Ok_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<OrderRepository>();
-        repository.GetAll().Returns(StaticDataOrder.Orders);
-        var userRepository = Substitute.For<UserRepository>();
-        var controller = new OrderController(repository, userRepository);
+        var repository = Substitute.For<IOrderRepository>();
+        repository.GetAllAsync().Returns(StaticDataOrder.Orders); 
+        var controller = new OrderController(repository);
         // Act
         var resultGetUsers = await controller.GetOrders();
         var expectedGetUsers = StaticData.Users;
@@ -56,28 +55,28 @@ public  class OrderControllerTest
         Assert.That((resultGetUsers as ObjectResult).StatusCode, Is.EqualTo(200));
     }
 
+
     [Test]
     public async Task DeleteOrder_Ok_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<OrderRepository>();
-        repository.GetById(15).Returns(StaticDataOrder.TestOrder1);
-        var userRepository = Substitute.For<UserRepository>();
-        var controller = new OrderController(repository, userRepository);
+        var repository = Substitute.For<IOrderRepository>();
+        repository.GetByIdAsync(15).Returns(StaticDataOrder.TestOrder1); 
+        var controller = new OrderController(repository);
         // Act
         var resultDeleteUser = await controller.DeleteOrder(15);
         // Assert
         Assert.That((resultDeleteUser as StatusCodeResult).StatusCode, Is.EqualTo(204));
     }
 
+
     [Test]
     public async Task DeleteOrder_Bad_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<OrderRepository>();
-        repository.GetById(15).Returns(StaticDataOrder.TestOrder1);
-        var userRepository = Substitute.For<UserRepository>();
-        var controller = new OrderController(repository, userRepository);
+        var repository = Substitute.For<IOrderRepository>();
+        repository.GetByIdAsync(15).Returns(StaticDataOrder.TestOrder1); 
+        var controller = new OrderController(repository);
         // Act
         var resultDeleteUser = await controller.DeleteOrder(150);
         // Assert
@@ -89,11 +88,10 @@ public  class OrderControllerTest
     public async Task CreateOrder_Ok_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<OrderRepository>();
-        repository.GetAll().Returns(StaticDataOrder.Orders);
-        var userRepository = Substitute.For<UserRepository>();
-        userRepository.GetById(0).ReturnsForAnyArgs(StaticDataOrder.Sender);
-        var controller = new OrderController(repository, userRepository);
+        var repository = Substitute.For<IOrderRepository>();
+        repository.SaveAsync(StaticDataOrder.TestOrder2).Returns(StaticDataOrder.TestOrder2);
+        repository.GetAllAsync().Returns(StaticDataOrder.Orders);  
+        var controller = new OrderController(repository);
         // Act
         var resultDeleteUser = await controller.CreateOrder(StaticDataOrder.TestOrder2);
         // Assert
@@ -105,10 +103,9 @@ public  class OrderControllerTest
     public async Task CreateOrder_Bad_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<OrderRepository>();
-        repository.GetAll().Returns(StaticDataOrder.Orders);
-        var userRepository = Substitute.For<UserRepository>();
-        var controller = new OrderController(repository, userRepository);
+        var repository = Substitute.For<IOrderRepository>();
+        repository.GetAllAsync().Returns(StaticDataOrder.Orders); 
+        var controller = new OrderController(repository);
         // Act
         var resultDeleteUser = await controller.CreateOrder(StaticDataOrder.TestOrder1);
         // Assert
