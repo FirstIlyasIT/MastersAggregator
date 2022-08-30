@@ -8,8 +8,12 @@ public class UserRepository : BaseRepository<User>, IUserRepository
 {
     public async Task<IEnumerable<User>> GetAllAsync()
     {
-        const string sqlQuery = "SELECT id AS Id, name AS Name, first_name AS FirstName, pfone AS Pfone " +
-                                "FROM master_shema.users";
+        const string sqlQuery =
+            $@"SELECT id AS {nameof(User.Id)},
+                      name AS {nameof(User.Name)},
+                      first_name AS {nameof(User.FirstName)},
+                      pfone AS {nameof(User.Pfone)}
+               FROM master_shema.users";
         using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
         var users = await connection.QueryAsync<User>(sqlQuery);
