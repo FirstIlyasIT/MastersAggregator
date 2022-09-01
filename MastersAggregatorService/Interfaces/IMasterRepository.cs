@@ -1,6 +1,6 @@
-﻿ using MastersAggregatorService.Models;
+﻿using MastersAggregatorService.Models;
 
-namespace MastersAggregatorService.Repositories;
+namespace MastersAggregatorService.Interfaces;
 
 public interface IMasterRepository
 {
@@ -20,5 +20,5 @@ public interface IMasterRepository
     Task DeleteAsync(Master model);
     Task<Master> UpdateAsync(Master model);
     Task<IEnumerable<Master>> GetByConditionAsync(bool condition);
- 
+
 }

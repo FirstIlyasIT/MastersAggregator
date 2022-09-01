@@ -1,4 +1,5 @@
 using Dapper;
+using MastersAggregatorService.Interfaces;
 using MastersAggregatorService.Models;
 using Npgsql;
 
@@ -17,8 +18,8 @@ public class MasterRepository : BaseRepository<Master>, IMasterRepository
     public async Task<IEnumerable<Master>> GetAllAsync()
     {
         string sqlQuery = $"SELECT id AS Id, name AS MastersName, is_active AS IsActive FROM master_shema.masters  ORDER BY id";
-        
-        using var connection = new NpgsqlConnection(ConnectionString);
+
+        await using var connection = new NpgsqlConnection(ConnectionString); 
         connection.Open();
         var masters = await connection.QueryAsync<Master>(sqlQuery); 
         return masters;
@@ -42,19 +43,11 @@ public class MasterRepository : BaseRepository<Master>, IMasterRepository
     public async Task<Master> GetByIdAsync(int idMaster)
     {
         string sqlQuery = "SELECT id AS Id, name AS MastersName, is_active AS IsActive  FROM master_shema.masters WHERE Id = @idMaster";
-        
-        using var connection = new NpgsqlConnection(ConnectionString);
+
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
 
-        try
-        {
-            Master master = await connection.QueryFirstAsync<Master>(sqlQuery, new{ idMaster });
-            return master;
-        }
-        catch (Exception)
-        {
-            return null;
-        }
+        return await connection.QueryFirstOrDefaultAsync<Master>(sqlQuery, new { idMaster }); 
     }
 
     /// <summary>
@@ -73,11 +66,11 @@ public class MasterRepository : BaseRepository<Master>, IMasterRepository
     /// </summary>
     /// <param name="condition"></param>
     /// <returns></returns>    
-    public async Task<IEnumerable<Master>> GetByConditionAsync(bool condition) // TODO: временно виртуальный для прохождения тестов
+    public async Task<IEnumerable<Master>> GetByConditionAsync(bool condition) 
     {
         string sqlQuery = $"SELECT id AS Id, name AS MastersName, is_active AS IsActive FROM master_shema.masters WHERE is_active = '{condition}' ";
-        
-        using var connection = new NpgsqlConnection(ConnectionString);
+
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
 
         var masters = await connection.QueryAsync<Master>(sqlQuery, new { condition }); 
@@ -92,23 +85,13 @@ public class MasterRepository : BaseRepository<Master>, IMasterRepository
     /// <returns>New object with database Id</returns>
     public async Task<Master> UpdateAsync(Master model)
     { 
-        string sqlQuery = "UPDATE master_shema.masters SET is_active = @isActive, name = @masterName   WHERE id = @masterId";  
-        int masterId = model.Id;
-        string masterName = model.MastersName;
-        bool isActive = model.IsActive;
-
-        using var connection = new NpgsqlConnection(ConnectionString);
+        string sqlQuery = "UPDATE master_shema.masters SET is_active = @IsActive, name = @MastersName  WHERE id = @Id";  
+ 
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
-         
-        try
-        {
-            await connection.ExecuteAsync(sqlQuery, new { masterId, masterName, isActive }); 
-            return model;
-        }
-        catch (Exception)
-        {
-            return null;
-        }
+
+        await connection.ExecuteAsync(sqlQuery, new { model.Id, model.MastersName, model.IsActive });
+        return model;
     }
 
 
@@ -119,22 +102,13 @@ public class MasterRepository : BaseRepository<Master>, IMasterRepository
     /// <returns>New object</returns>
     public async Task<Master> SaveAsync(Master model)
     {
-        string sqlQuery = $"INSERT INTO master_shema.masters (name, is_active) VALUES (@mastersName, @isActive)";
-        string mastersName = model.MastersName;
-        bool isActive = model.IsActive;
+        string sqlQuery = $"INSERT INTO master_shema.masters (name, is_active) VALUES (@MastersName, @IsActive)"; 
 
-        using var connection = new NpgsqlConnection(ConnectionString);
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
-
-        try
-        { 
-            await connection.ExecuteAsync(sqlQuery, new { mastersName, isActive });
-            return model;
-        }
-        catch (Exception)
-        {
-            return null;
-        }
+         
+        await connection.ExecuteAsync(sqlQuery, new { model.MastersName, model.IsActive });
+        return model; 
     }
 
     /// <summary>
@@ -155,13 +129,12 @@ public class MasterRepository : BaseRepository<Master>, IMasterRepository
     /// <returns></returns>
     public async Task DeleteAsync(Master model)
     {
-        string sqlQuery = "DELETE FROM master_shema.masters WHERE id = @intIdMaster";
+        string sqlQuery = "DELETE FROM master_shema.masters WHERE id = @Id";
 
-        using var connection = new NpgsqlConnection(ConnectionString);
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
-
-        int intIdMaster = model.Id; 
-        await connection.ExecuteAsync(sqlQuery, new { intIdMaster });
+         
+        await connection.ExecuteAsync(sqlQuery, new { model.Id });
     }
 
     /// <summary>

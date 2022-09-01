@@ -1,5 +1,5 @@
+using MastersAggregatorService.Interfaces;
 using MastersAggregatorService.Models;
-using MastersAggregatorService.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MastersAggregatorService.Controllers;
@@ -35,7 +35,7 @@ public class UserController : BaseController<User>
         if (user is null)
             return NotFound();
         else
-            return Ok(new JsonResult(user));
+            return Ok(user);
     }
      
 

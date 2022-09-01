@@ -1,13 +1,13 @@
 using MastersAggregatorService.Controllers;
+using MastersAggregatorService.Interfaces;
 using MastersAggregatorService.Models;
-using MastersAggregatorService.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
 
 namespace MastersAggregator.Test.ControllersTest;
- 
+
 
 [TestFixture(TestOf = typeof(OrderController))]
 public  class OrderControllerTest
@@ -18,7 +18,6 @@ public  class OrderControllerTest
         // Arrange
         var repository = Substitute.For<IOrderRepository>();
         repository.GetByIdAsync(15).Returns(StaticDataOrder.TestOrder1);
-       // var userRepository = Substitute.For<UserRepository>();
         var controller = new OrderController(repository);
         // Act
         var result = await controller.GetOrder(15);

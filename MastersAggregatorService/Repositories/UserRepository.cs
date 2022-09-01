@@ -1,4 +1,5 @@
 using Dapper;
+using MastersAggregatorService.Interfaces;
 using MastersAggregatorService.Models;
 using Npgsql;
 
@@ -17,8 +18,9 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     public async Task<IEnumerable<User>> GetAllAsync()
     {
         const string sqlQuery = $"SELECT id AS Id, name AS Name, first_name AS FirstName, pfone AS Pfone FROM master_shema.users";
-        var connection = new NpgsqlConnection(ConnectionString);
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
+
         var users = await connection.QueryAsync<User>(sqlQuery);
         await connection.CloseAsync();
         return users;
@@ -42,18 +44,10 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     public async Task<User> GetByIdAsync(int idUser)
     {
         string sqlQuery = $"SELECT id AS Id, name AS Name, first_name AS FirstName, pfone AS Pfone  FROM master_shema.users WHERE Id = @idUser";
-        using var connection = new NpgsqlConnection(ConnectionString);
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
 
-        try
-        {
-            User user = await connection.QueryFirstAsync<User>(sqlQuery, new { idUser });
-            return user;
-        }
-        catch (Exception)
-        { 
-            return null;
-        } 
+        return await connection.QueryFirstOrDefaultAsync<User>(sqlQuery, new { idUser });
     }
 
     /// <summary>
@@ -74,17 +68,14 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     /// <returns></returns>
     public async Task<User> SaveAsync(User model)
     {    
-        string sqlQuery = $"INSERT INTO master_shema.users (name, first_name, pfone) VALUES (@userName, @userFirstName, @userPfone)";
-        string userName = model.Name;
-        string userFirstName = model.FirstName;
-        string userPfone = model.Pfone;
+        string sqlQuery = $"INSERT INTO master_shema.users (name, first_name, pfone) VALUES (@Name, @FirstName, @Pfone)";   
 
-        using var connection = new NpgsqlConnection(ConnectionString);
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
          
         try
         {
-            await connection.ExecuteAsync(sqlQuery, new { userName, userFirstName, userPfone });
+            await connection.ExecuteAsync(sqlQuery, new { model.Name, model.FirstName, model.Pfone });
             return model;
         }
         catch (Exception)
@@ -110,16 +101,12 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     /// <param name="model"></param>
     /// <returns></returns>
     public async Task UpdateAsync(User model)
-    {
-        int userId = model.Id;
-        string userName = model.Name;
-        string userFirstName = model.FirstName;
-        string userPfone = model.Pfone;
-        var sqlQuery = $@"UPDATE master_shema.users SET name = @userName, first_name = @userFirstName, pfone = @userPfone  WHERE id = @userId";
-        using var connection = new NpgsqlConnection(ConnectionString);
+    { 
+        var sqlQuery = $@"UPDATE master_shema.users SET name = @Name, first_name = @FirstName, pfone = @Pfone  WHERE id = @Id";
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
 
-        await connection.ExecuteAsync(sqlQuery, new { userName, userFirstName, userPfone, userId });
+        await connection.ExecuteAsync(sqlQuery, new { model.Name, model.FirstName, model.Pfone, model.Id });
     }
 
 
@@ -129,13 +116,12 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     /// <param name="model"></param>
     /// <returns></returns>
     public async Task DeleteAsync(User model)
-    {
-        int userId = model.Id;
-        string sqlQuery = $"DELETE FROM master_shema.users WHERE id = @userId";
-        using var connection = new NpgsqlConnection(ConnectionString);
+    { 
+        string sqlQuery = $"DELETE FROM master_shema.users WHERE id = @Id";
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
 
-        await connection.ExecuteAsync(sqlQuery, new { userId }); 
+        await connection.ExecuteAsync(sqlQuery, new { model.Id }); 
     }
 
     /// <summary>

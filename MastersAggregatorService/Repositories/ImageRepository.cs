@@ -1,4 +1,5 @@
 using MastersAggregatorService.Data;
+using MastersAggregatorService.Interfaces;
 using MastersAggregatorService.Models;
 
 namespace MastersAggregatorService.Repositories;

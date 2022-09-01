@@ -1,9 +1,10 @@
 using Dapper;
+using MastersAggregatorService.Interfaces;
 using MastersAggregatorService.Models;
 using Npgsql;
 
 namespace MastersAggregatorService.Repositories;
- 
+
 
 public class OrderRepository : BaseRepository<Order>, IOrderRepository
 {
@@ -17,7 +18,7 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
     /// <returns></returns>
     public async Task<IEnumerable<Order>> GetAllAsync()
     {
-        var Orders = new List<Order>();//список всех Order
+        var orders = new List<Order>();//список всех Order
 
         const string sqlQuerySender = @"SELECT DISTINCT orders.id AS ordersid, users.id AS usersid, users.name AS name, users.first_name, users.pfone 
                       FROM master_shema.orders 
@@ -31,7 +32,7 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
                       INNER JOIN master_shema.images ON images.id = image_of_orders.image_id 
                       ORDER BY orders.id";
 
-        using var connection = new NpgsqlConnection(ConnectionString);
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
          
         IEnumerable<dynamic> resultDynamicQuerySenders = connection.Query(sqlQuerySender);
@@ -41,7 +42,7 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
         {
             //собираем обьект Images с resultDynamicQueryImages
             var Images = new List<Image>();
-            foreach (var ObjImages in resultDynamicQueryImages)
+            foreach (var ObjImages in resultDynamicQueryImages)  //TODO Заменить сборку Images на метод из ImageRepository
             {
                 if (ObjSender.ordersid == ObjImages.ordersid)
                     Images.Add(new Image { Id = ObjImages.imagesid, ImageDescription = ObjImages.description, ImageUrl = ObjImages.url });
@@ -52,10 +53,10 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
                  Sender = new User { Id = ObjSender.usersid, Name = ObjSender.name, FirstName = ObjSender.first_name, Pfone = ObjSender.pfone }, 
                  Images = Images };
 
-            Orders.Add(order);
+            orders.Add(order);
         }
             
-      return Orders;
+      return orders;
     }
 
     /// <summary>
@@ -75,7 +76,7 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
     /// <returns></returns> 
     public async Task<Order> GetByIdAsync(int idOrder)
     {
-        const string sqlQuerySender = @"SELECT DISTINCT orders.id AS ordersid, users.id AS usersid, users.name AS name, users.first_name, users.pfone 
+        const string sqlQueryUserSender = @"SELECT DISTINCT orders.id AS ordersid, users.id AS usersid, users.name AS name, users.first_name, users.pfone 
                       FROM master_shema.orders
                       INNER JOIN master_shema.users ON users.id = orders.user_id
                       INNER JOIN master_shema.image_of_orders ON image_of_orders.order_id = orders.id 
@@ -88,12 +89,12 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
                       WHERE orders.id = @idOrder";
 
 
-        using var connection = new NpgsqlConnection(ConnectionString);
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
           
         try
         {
-            IEnumerable<dynamic> resultDynamicQuerySenders = connection.Query(sqlQuerySender, new { idOrder });
+            IEnumerable<dynamic> resultDynamicQuerySenders = connection.Query(sqlQueryUserSender, new { idOrder });
             var ObjSender = resultDynamicQuerySenders.First();
 
             IEnumerable<dynamic> resultDynamicQueryImages = connection.Query(sqlQueryImage, new { idOrder });
@@ -148,28 +149,26 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
 
         //SQL запрос - добавляем в таблицу image_of_orders новый image если они существуют в таблице 
         string sqlQueryAddImages = @"INSERT INTO master_shema.image_of_orders (order_id, image_id) 
-	                                        VALUES (@orderId, (SELECT master_shema.images.id  FROM master_shema.images WHERE master_shema.images.id = @imageId)) ";
-        
+	                                        VALUES (@orderId, (SELECT master_shema.images.id  FROM master_shema.images WHERE master_shema.images.id = @Id)) ";
 
-        using var connection = new NpgsqlConnection(ConnectionString);
+
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
 
         try
-        {
+        {  
             //делаем запрос добавления нового ордера и получаем id созданой строки в таблице master_shema.orders
-            var resIdNewOrder = connection.QueryAsync<dynamic>(sqlQueryAddOrders, new { userId }).Result;
+            var resIdNewOrder = await connection.QuerySingleAsync<dynamic>(sqlQueryAddOrders, new { userId });
             int? orderId = null;
-            orderId = resIdNewOrder.First().id;
+            orderId = resIdNewOrder.id;
             if (orderId == null)
                 return null;
-
             //перебераем список Images и добавляем в БД master_shema.image_of_orders картинки (добавляються если они существуют в master_shema.images)
             foreach (var image in model.Images)
-            {
-                int imageId = image.Id;
+            { 
                 try
                 {
-                    await connection.ExecuteAsync(sqlQueryAddImages, new { orderId, imageId });
+                    await connection.ExecuteAsync(sqlQueryAddImages, new { orderId, image.Id });
                 }
                 catch (Exception)
                 { 
@@ -201,14 +200,13 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
     /// <param name="model"></param>
     /// <returns></returns>
     public async Task DeleteAsync(Order model)
-    {
-        int orderId = model.Id;
-        string sqlQuery = @"DELETE FROM master_shema.image_of_orders WHERE image_of_orders.order_id = @orderId;
-                            DELETE FROM master_shema.orders WHERE orders.id = @orderId";
-        using var connection = new NpgsqlConnection(ConnectionString);
+    { 
+        string sqlQuery = @"DELETE FROM master_shema.image_of_orders WHERE image_of_orders.order_id = @Id;
+                            DELETE FROM master_shema.orders WHERE orders.id = @Id";
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
 
-        await connection.ExecuteAsync(sqlQuery, new { orderId });
+        await connection.ExecuteAsync(sqlQuery, new { model.Id });
     }
 
     /// <summary>

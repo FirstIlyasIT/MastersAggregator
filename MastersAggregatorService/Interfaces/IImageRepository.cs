@@ -1,6 +1,6 @@
 ﻿using MastersAggregatorService.Models;
 
-namespace MastersAggregatorService.Repositories;
+namespace MastersAggregatorService.Interfaces;
 
 public interface IImageRepository
 {

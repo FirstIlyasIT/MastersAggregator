@@ -1,3 +1,4 @@
+using MastersAggregatorService.Interfaces;
 using MastersAggregatorService.Repositories;
 using Microsoft.OpenApi.Models;
 using System.Reflection;

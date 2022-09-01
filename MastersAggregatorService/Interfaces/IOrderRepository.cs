@@ -1,6 +1,6 @@
 ﻿using MastersAggregatorService.Models;
 
-namespace MastersAggregatorService.Repositories;
+namespace MastersAggregatorService.Interfaces;
 
 public interface IOrderRepository
 {
@@ -17,5 +17,5 @@ public interface IOrderRepository
     public Order? Save(Order model);
     Task<Order> SaveAsync(Order model);
     public void Delete(Order model);
-    Task DeleteAsync(Order model); 
+    Task DeleteAsync(Order model);
 }
