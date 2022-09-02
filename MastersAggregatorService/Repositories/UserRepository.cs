@@ -9,12 +9,12 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     public async Task<IEnumerable<User>> GetAllAsync()
     {
         const string sqlQuery =
-            $@"SELECT id AS {nameof(User.Id)},
-                      name AS {nameof(User.Name)},
-                      first_name AS {nameof(User.FirstName)},
-                      pfone AS {nameof(User.Pfone)}
-               FROM master_shema.users";
-        using var connection = new NpgsqlConnection(ConnectionString);
+            $@" SELECT id AS {nameof(User.Id)}," +
+            $@" name AS {nameof(User.Name)}," +
+            $@" first_name AS {nameof(User.FirstName)}," +
+            $@" pfone AS {nameof(User.Pfone)}" +
+            @" FROM master_shema.users";
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
         var users = await connection.QueryAsync<User>(sqlQuery);
         
@@ -29,14 +29,13 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     public async Task<User> GetByIdAsync(int userId)
     {
         const string sqlQuery = 
-        $@"SELECT id AS {nameof(User.Id)},
-                  name AS {nameof(User.Name)},
-                  first_name AS {nameof(User.FirstName)},
-                  pfone AS {nameof(User.Pfone)}
-        FROM master_shema.users 
-        WHERE id = @Id";
+        $@" SELECT id AS {nameof(User.Id)}," +
+        $@" name AS {nameof(User.Name)}," +
+        $@" first_name AS {nameof(User.FirstName)}," +
+        $@" pfone AS {nameof(User.Pfone)}" +
+         @" FROM master_shema.users WHERE id = @Id";
 
-        using var connection = new NpgsqlConnection(ConnectionString);
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
         var user = await connection.QueryFirstAsync<User>(sqlQuery, new { Id = userId });
 
@@ -51,10 +50,10 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     public async Task<User> SaveAsync(User model)
     {
         const string sqlQuery =
-            $@"INSERT INTO master_shema.users (name, first_name, pfone)
-             VALUES (@{nameof(User.Name)}, @{nameof(User.FirstName)}, @{nameof(User.Pfone)})";
+            @"INSERT INTO master_shema.users (name, first_name, pfone)" +
+            $@"VALUES (@{nameof(User.Name)}, @{nameof(User.FirstName)}, @{nameof(User.Pfone)})";
 
-        using var connection = new NpgsqlConnection(ConnectionString);
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
         await connection.ExecuteAsync(sqlQuery, model);
 
@@ -70,8 +69,8 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     {
         const string sqlQuery =
             "DELETE FROM master_shema.users WHERE id = @Id";
-        
-        using var connection = new NpgsqlConnection(ConnectionString);
+
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
         await connection.ExecuteAsync(sqlQuery, new { Id = model.Id });
     }
@@ -85,13 +84,13 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     public async Task UpdateAsync(User model)
     {
         const string sqlQuery =
-            $@"UPDATE master_shema.users 
-               SET name = @{nameof(User.Name)},
-                   firstname = @{nameof(User.FirstName)},
-                   pfone = @{nameof(User.Pfone)}
-               WHERE id = @{nameof(User.Id)}";
+            @" UPDATE master_shema.users" +
+            $@" SET name = @{nameof(User.Name)}," +
+            $@"firstname = @{nameof(User.FirstName)}," +
+            $@"pfone = @{nameof(User.Pfone)}" +
+            $@" WHERE id = @{nameof(User.Id)}";
 
-        using var connection = new NpgsqlConnection(ConnectionString);
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
         await connection.ExecuteAsync(sqlQuery, model);
     }

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MastersAggregatorService.Controllers;
 
 [ApiController]
-[Route("{controller}")]
+[Route("api/[controller]/[action]")]
 [Produces("application/json")]
 [Consumes("application/json")]
 public class UserController : BaseController<User>

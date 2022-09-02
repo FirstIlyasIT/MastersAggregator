@@ -34,7 +34,7 @@ builder.Services.AddCors(); // возможно следует удалить в
 });
 
 //Добавили в сервис наши Repository 
-builder.Services.AddScoped<ImageRepository>()
+builder.Services.AddScoped<IImageRepository ,ImageRepository>()
                 .AddScoped<IUserRepository, UserRepository>()
                 .AddScoped<OrderRepository>()
                 .AddScoped<MasterRepository>();

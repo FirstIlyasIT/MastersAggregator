@@ -9,12 +9,12 @@ public class ImageRepository : BaseRepository<Image>, IImageRepository
     public async Task<IEnumerable<Image>> GetAllAsync()
     {
         const string sqlQuery =
-            $@"SELECT id AS {nameof(Image.Id)},
-                      url AS {nameof(Image.ImageUrl)},
-                      description AS {nameof(Image.ImageDescription)}
-                FROM master_shema.images";
+                $@"SELECT id AS {nameof(Image.Id)}," +
+                $@"url AS {nameof(Image.ImageUrl)}," +
+                $@"description AS {nameof(Image.ImageDescription)}" +
+                @" FROM master_shema.images";
 
-        using var connection = new NpgsqlConnection(ConnectionString);
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
         var images = await connection.QueryAsync<Image>(sqlQuery);
 
@@ -29,15 +29,15 @@ public class ImageRepository : BaseRepository<Image>, IImageRepository
     public async Task<Image> GetByIdAsync(int imageId)
     {
         const string sqlQuery =
-            $@"SELECT id AS {nameof(Image.Id)},
-                      url AS {nameof(Image.ImageUrl)},
-                      description AS {nameof(Image.ImageDescription)}
-                FROM master_shema.images
-                WHERE id = @Id";
-        
-        using var connection = new NpgsqlConnection(ConnectionString);
+            $@"SELECT id AS {nameof(Image.Id)}," +
+                      $@"url AS {nameof(Image.ImageUrl)}," +
+                      $@"description AS {nameof(Image.ImageDescription)}" +
+            @" FROM master_shema.images" +
+            @" WHERE id = @Id";
+
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
-        var image = await connection.QueryFirstAsync(sqlQuery, new { Id = imageId });
+        var image = await connection.QueryFirstAsync<Image>(sqlQuery, new { Id = imageId });
 
         return image;
     }
@@ -50,10 +50,10 @@ public class ImageRepository : BaseRepository<Image>, IImageRepository
     public async Task<Image> SaveAsync(Image model)
     {
         const string sqlQuery =
-            $@"INSERT INTO master_shema.images(url, description)
-               VALUES (@{nameof(Image.ImageUrl)}, @{nameof(Image.ImageDescription)})";
-        
-        using var connection = new NpgsqlConnection(ConnectionString);
+            @"INSERT INTO master_shema.images(url, description)" +
+            $@"VALUES (@{nameof(Image.ImageUrl)}, @{nameof(Image.ImageDescription)})";
+
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
         await connection.ExecuteAsync(sqlQuery, model);
 
@@ -70,7 +70,7 @@ public class ImageRepository : BaseRepository<Image>, IImageRepository
         const string sqlQuery =
             "DELETE FROM master_shema.images WHERE id = @Id";
 
-        using var connection = new NpgsqlConnection(ConnectionString);
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
         await connection.ExecuteAsync(sqlQuery, new {Id = model.Id});
     }
@@ -83,12 +83,12 @@ public class ImageRepository : BaseRepository<Image>, IImageRepository
     public async Task UpdateAsync(Image model)
     {
         const string sqlQuery =
-            $@"UPDATE master_shema.images
-               SET url = @{nameof(model.ImageUrl)},
-                   description = @{nameof(model.ImageDescription)}
-               WHERE id = @{nameof(model.Id)}";
+            @" UPDATE master_shema.images" +
+            $@" SET url = @{nameof(model.ImageUrl)}," +
+            $@" description = @{nameof(model.ImageDescription)}" +
+            $@" WHERE id = @{nameof(model.Id)}";
 
-        using var connection = new NpgsqlConnection(ConnectionString);
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
         await connection.ExecuteAsync(sqlQuery, model);
     }
