@@ -57,7 +57,7 @@ public class MasterController : BaseController<Master>
     /// <summary>
     /// GET masters by condition
     /// </summary>
-    /// <param name="Boolean condition"></param>
+    /// <param name="condition"></param>
     /// <returns>List of masters by condition in Json format</returns>
     /// <response code="200"> Returns Masters by condition in Json format.</response>
     /// <response code="404"> Masters with this condition does not exist</response>
@@ -84,6 +84,12 @@ public class MasterController : BaseController<Master>
     [HttpPost] 
     public async Task<IActionResult> CreateMaster([FromBody] Master master)
     {
+        //переопределен метод Equals() и сравниваем пока по id и имени (MastersName) есть ли такой Master в БД то return BadRequest()
+        var masters = await _repository.GetAllAsync();
+
+        if (masters.Any(u => u.MastersName.Equals(master.MastersName) == true))
+            return BadRequest(); 
+
         await _repository.SaveAsync(master);
         return NoContent();
     }
@@ -92,7 +98,7 @@ public class MasterController : BaseController<Master>
     /// <summary>
     /// PUT to change master's 
     /// </summary>
-    /// <param name="ObjectMaster"></param>
+    /// <param name="master"></param>
     /// <returns>Master with changed condition in Json format</returns>
     /// <response code="200"> Changes master's condition.</response>
     /// <response code="400"> Invalid master's model</response>
@@ -101,7 +107,7 @@ public class MasterController : BaseController<Master>
     {
         var masters = await _repository.GetAllAsync();
 
-        if (masters.Any(u => u.Id == master.Id))
+        if (masters.Any(u => u.MastersName.Equals(master.MastersName) == true))
         {
             await _repository.UpdateAsync(master);
             return NoContent();

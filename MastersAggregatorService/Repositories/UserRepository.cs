@@ -17,7 +17,8 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     /// <returns></returns>
     public async Task<IEnumerable<User>> GetAllAsync()
     {
-        const string sqlQuery = $"SELECT id AS Id, name AS Name, first_name AS FirstName, pfone AS Pfone FROM master_shema.users";
+        const string sqlQuery = @"SELECT id AS Id, name AS Name, first_name AS FirstName, pfone AS Pfone " +
+                                      @"FROM master_shema.users";
         await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
 
@@ -32,7 +33,7 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     /// <returns></returns>
     public IEnumerable<User> GetAll()
     {
-        return GetAllAsync().Result;
+        return GetAllAsync().GetAwaiter().GetResult();
     }
 
 
@@ -43,7 +44,8 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     /// <returns></returns> 
     public async Task<User> GetByIdAsync(int idUser)
     {
-        string sqlQuery = $"SELECT id AS Id, name AS Name, first_name AS FirstName, pfone AS Pfone  FROM master_shema.users WHERE Id = @idUser";
+        string sqlQuery = @"SELECT id AS Id, name AS Name, first_name AS FirstName, pfone AS Pfone  " +
+                                @"FROM master_shema.users WHERE Id = @idUser";
         await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
 
@@ -57,7 +59,7 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     /// <returns></returns> 
     public User? GetById(int id)
     {
-        return GetByIdAsync(id).Result;
+        return GetByIdAsync(id).GetAwaiter().GetResult();
     }
 
 
@@ -68,7 +70,8 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     /// <returns></returns>
     public async Task<User> SaveAsync(User model)
     {    
-        string sqlQuery = $"INSERT INTO master_shema.users (name, first_name, pfone) VALUES (@Name, @FirstName, @Pfone)";   
+        string sqlQuery = @"INSERT INTO master_shema.users (name, first_name, pfone) " +
+                                @"VALUES (@Name, @FirstName, @Pfone)";   
 
         await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
@@ -91,7 +94,7 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     /// <returns></returns>
     public User Save(User model)
     {
-        return SaveAsync(model).Result;
+        return SaveAsync(model).GetAwaiter().GetResult();
     }
  
 
@@ -102,7 +105,7 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     /// <returns></returns>
     public async Task UpdateAsync(User model)
     { 
-        var sqlQuery = $@"UPDATE master_shema.users SET name = @Name, first_name = @FirstName, pfone = @Pfone  WHERE id = @Id";
+        var sqlQuery = @"UPDATE master_shema.users SET name = @Name, first_name = @FirstName, pfone = @Pfone  WHERE id = @Id";
         await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
 
@@ -117,7 +120,7 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     /// <returns></returns>
     public async Task DeleteAsync(User model)
     { 
-        string sqlQuery = $"DELETE FROM master_shema.users WHERE id = @Id";
+        string sqlQuery = @"DELETE FROM master_shema.users WHERE id = @Id";
         await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
 
@@ -131,6 +134,6 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     /// <returns></returns>
     public void Delete(User model)
     {
-        DeleteAsync(model);
+        DeleteAsync(model).GetAwaiter().GetResult();
     } 
 }
