@@ -79,7 +79,7 @@ public class UserController : BaseController<User>
     public async Task<IActionResult> CreateUser([FromBody]User user)
     {
         var users = await _repository.GetAllAsync();
-        if (users.Any(u => u.Id == user.Id))
+        if (users.Any(u => u.Equals(user)))
             return BadRequest();
         else
         {
@@ -99,7 +99,7 @@ public class UserController : BaseController<User>
     {
         var users = await _repository.GetAllAsync();
 
-        if (users.Any(u => u.Id == user.Id))
+        if (users.Any(u => u.Equals(user)))
         {
             await _repository.SaveAsync(user);
             return NoContent();

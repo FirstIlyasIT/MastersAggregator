@@ -51,13 +51,17 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     {
         const string sqlQuery =
             @"INSERT INTO master_shema.users (name, first_name, pfone)" +
-            $@"VALUES (@{nameof(User.Name)}, @{nameof(User.FirstName)}, @{nameof(User.Pfone)})";
+            $@"VALUES (@{nameof(User.Name)}, @{nameof(User.FirstName)}, @{nameof(User.Pfone)})" +
+            @"RETURNING id";
 
         await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
-        await connection.ExecuteAsync(sqlQuery, model);
+        var id = connection.Query<int>(sqlQuery, model);
 
-        return model;
+        var result =
+            new User { Id = id.FirstOrDefault(), Name = model.Name, Pfone = model.Pfone, FirstName = model.FirstName};
+
+        return result;
     }
 
     public User Save(User model)
@@ -78,7 +82,7 @@ public class UserRepository : BaseRepository<User>, IUserRepository
 
     public void Delete(User model)
     {
-        DeleteAsync(model);
+        DeleteAsync(model).GetAwaiter().GetResult();
     }
 
     public async Task UpdateAsync(User model)

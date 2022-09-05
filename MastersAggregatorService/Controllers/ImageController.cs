@@ -80,7 +80,7 @@ public class ImageController : BaseController<Image>
     {
         var images = await _repository.GetAllAsync(); 
         
-        if (images.Any(s => s.Id == image.Id))
+        if (images.Any(x => x.Equals(image)))
             return BadRequest();
 
         await _repository.SaveAsync(image);
@@ -98,7 +98,7 @@ public class ImageController : BaseController<Image>
     {
         var images = await _repository.GetAllAsync();
 
-        if (images.Any(imageTemp => imageTemp.Id == image.Id))
+        if (images.Any(x => x.Equals(image)))
         {
             await _repository.UpdateAsync(image);
             return NoContent();

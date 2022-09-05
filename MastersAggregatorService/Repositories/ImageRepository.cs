@@ -30,8 +30,8 @@ public class ImageRepository : BaseRepository<Image>, IImageRepository
     {
         const string sqlQuery =
             $@"SELECT id AS {nameof(Image.Id)}," +
-                      $@"url AS {nameof(Image.ImageUrl)}," +
-                      $@"description AS {nameof(Image.ImageDescription)}" +
+            $@"url AS {nameof(Image.ImageUrl)}," +
+            $@"description AS {nameof(Image.ImageDescription)}" +
             @" FROM master_shema.images" +
             @" WHERE id = @Id";
 
@@ -51,13 +51,17 @@ public class ImageRepository : BaseRepository<Image>, IImageRepository
     {
         const string sqlQuery =
             @"INSERT INTO master_shema.images(url, description)" +
-            $@"VALUES (@{nameof(Image.ImageUrl)}, @{nameof(Image.ImageDescription)})";
+            $@"VALUES (@{nameof(Image.ImageUrl)}, @{nameof(Image.ImageDescription)})" +
+            @" RETURNING id";
 
         await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
-        await connection.ExecuteAsync(sqlQuery, model);
+        var id = connection.Query<int>(sqlQuery, model);
 
-        return model;
+        var result =
+            new Image {Id = id.FirstOrDefault(), ImageUrl = model.ImageUrl, ImageDescription = model.ImageDescription};
+
+        return result;
     }
 
     public Image Save(Image model)
@@ -77,7 +81,7 @@ public class ImageRepository : BaseRepository<Image>, IImageRepository
 
     public void Delete(Image model)
     {
-         DeleteAsync(model);
+         DeleteAsync(model).GetAwaiter().GetResult();
     }
 
     public async Task UpdateAsync(Image model)
