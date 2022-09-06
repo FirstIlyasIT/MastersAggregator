@@ -1,6 +1,6 @@
 using MastersAggregatorService.Controllers;
-using MastersAggregatorService.Interfaces;
 using MastersAggregatorService.Models;
+using MastersAggregatorService.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
@@ -69,12 +69,12 @@ public class UserControllerTest
     {
         // Arrange
         var repository = Substitute.For<IUserRepository>();
-        repository.GetByIdAsync(15).Returns(Task.FromResult(StaticData.TestUser1));
+        repository.GetByIdAsync(150).Returns(Task.FromResult<User>(null));
         // Act
         var controller = new UserController(repository);
         var resultDeleteUser = await controller.DeleteUser(150);
         // Assert
-        Assert.That((resultDeleteUser as StatusCodeResult).StatusCode, Is.EqualTo(400)); 
+        Assert.That((resultDeleteUser as StatusCodeResult).StatusCode, Is.EqualTo(404)); 
 
     }
 
@@ -145,7 +145,7 @@ static class StaticData
 
     public static List<User> Users = new List<User>
     {
-        new User { Id = 0, Name = "Andrey", FirstName = "Sidorov", Pfone = "+745-34-34-153" },
+        new User { Id = 0, Name = "Andrey", FirstName = "Sidorov", Pfone = "+745-34-34-154" },
         new User { Id = 1, Name = "Sasha",  FirstName = "Smelov",  Pfone = "+745-88-11-222" }
     };
 

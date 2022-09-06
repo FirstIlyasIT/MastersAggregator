@@ -118,9 +118,4 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         connection.Open();
         await connection.ExecuteAsync(sqlQuery, model);
     }
-
-    public UserRepository(IConfiguration configuration) : base(configuration)
-    {
-        DeleteAsync(model).GetAwaiter().GetResult();
-    } 
 }
