@@ -4,37 +4,99 @@ using Npgsql;
 
 namespace MastersAggregatorService.Repositories;
 
-public class UserRepository : BaseRepository<User>
+public class UserRepository : BaseRepository<User>, IUserRepository
 {
     public async Task<IEnumerable<User>> GetAllAsync()
     {
-        const string sqlQuery = "SELECT id AS Id, name AS Name, first_name AS FirstName, pfone AS Pfone " +
-                                "FROM master_shema.users";
-        var connection = new NpgsqlConnection(ConnectionString);
+        const string sqlQuery =
+            $@" SELECT id AS {nameof(User.Id)}," +
+            $@" name AS {nameof(User.Name)}," +
+            $@" first_name AS {nameof(User.FirstName)}," +
+            $@" pfone AS {nameof(User.Pfone)}" +
+            @" FROM master_shema.users";
+        await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
         var users = await connection.QueryAsync<User>(sqlQuery);
-        await connection.CloseAsync();
+        
         return users;
     }
 
-    public override IEnumerable<User> GetAll()
+    public IEnumerable<User> GetAll()
     {
         return GetAllAsync().Result;
     }
 
-    public override User? GetById(int id)
+    public async Task<User> GetByIdAsync(int userId)
     {
-        throw new NotImplementedException();
+        const string sqlQuery = 
+        $@" SELECT id AS {nameof(User.Id)}," +
+        $@" name AS {nameof(User.Name)}," +
+        $@" first_name AS {nameof(User.FirstName)}," +
+        $@" pfone AS {nameof(User.Pfone)}" +
+         @" FROM master_shema.users WHERE id = @Id";
+
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        connection.Open();
+        var user = await connection.QueryFirstAsync<User>(sqlQuery, new { Id = userId });
+
+        return user;
     }
 
-    public override User Save(User model)
+    public User GetById(int id)
     {
-        throw new NotImplementedException();
+        return GetByIdAsync(id).Result;
     }
 
-    public override void Delete(User model)
+    public async Task<User> SaveAsync(User model)
     {
-        throw new NotImplementedException();
+        const string sqlQuery =
+            @"INSERT INTO master_shema.users (name, first_name, pfone)" +
+            $@"VALUES (@{nameof(User.Name)}, @{nameof(User.FirstName)}, @{nameof(User.Pfone)})" +
+            @"RETURNING id";
+
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        connection.Open();
+        var id = connection.Query<int>(sqlQuery, model);
+
+        var result =
+            new User { Id = id.FirstOrDefault(), Name = model.Name, Pfone = model.Pfone, FirstName = model.FirstName};
+
+        return result;
+    }
+
+    public User Save(User model)
+    {
+        return SaveAsync(model).Result;
+    }
+
+    public async Task DeleteAsync(User model)
+    {
+        const string sqlQuery =
+            "DELETE FROM master_shema.users WHERE id = @Id";
+
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        connection.Open();
+        await connection.ExecuteAsync(sqlQuery, new { Id = model.Id });
+    }
+
+
+    public void Delete(User model)
+    {
+        DeleteAsync(model).GetAwaiter().GetResult();
+    }
+
+    public async Task UpdateAsync(User model)
+    {
+        const string sqlQuery =
+            @" UPDATE master_shema.users" +
+            $@" SET name = @{nameof(User.Name)}," +
+            $@"firstname = @{nameof(User.FirstName)}," +
+            $@"pfone = @{nameof(User.Pfone)}" +
+            $@" WHERE id = @{nameof(User.Id)}";
+
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        connection.Open();
+        await connection.ExecuteAsync(sqlQuery, model);
     }
 
     public UserRepository(IConfiguration configuration) : base(configuration)

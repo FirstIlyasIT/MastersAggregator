@@ -2,6 +2,24 @@ namespace MastersAggregatorService.Models;
 
 public class Image : BaseModel
 {
-    public string ImageUrl { get; set; } //храним фото на котором указан обьект с которым необходимо произвести ремонт
-    public string ImageDescription { get; set; } = "не указано описание задания"; //описание задания на фото
+    private bool Equals(Image other)
+    {
+        return ImageUrl == other.ImageUrl;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != GetType()) return false;
+        return Equals((Image)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return ImageUrl.GetHashCode();
+    }
+
+    public string ImageUrl { get; set; }
+    public string ImageDescription { get; set; } = "РћРїРёСЃР°РЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ";
 }

@@ -375,4 +375,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-MastersAggregator.Test/bin/Debug/net6.0/
+MastersAggregator.Test/bin/
