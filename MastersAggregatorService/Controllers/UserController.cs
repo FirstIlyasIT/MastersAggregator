@@ -1,5 +1,5 @@
+using MastersAggregatorService.Interfaces;
 using MastersAggregatorService.Models;
-using MastersAggregatorService.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MastersAggregatorService.Controllers;
@@ -61,13 +61,14 @@ public class UserController : BaseController<User>
     {
         var user = await _repository.GetByIdAsync(id);
         if (user is null)
-            return BadRequest();
+            return NotFound();
         else
         {
             await _repository.DeleteAsync(user);
             return NoContent();
         }
     }
+     
 
     /// <summary>
     /// POST to create user
@@ -109,6 +110,19 @@ public class UserController : BaseController<User>
             return BadRequest(); 
         }
     }
+     
 
+    [HttpDelete("id")]
+    public async Task<IActionResult> DeleteUser(int id)
+    {
+        var user = await _repository.GetByIdAsync(id);
+        if (user is null)
+            return BadRequest();
+        else
+        {
+            await _repository.DeleteAsync(user);
+            return NoContent();
+        }
+    }
 }
  

@@ -1,12 +1,11 @@
+using MastersAggregatorService.Interfaces;
 using MastersAggregatorService.Models;
-using MastersAggregatorService.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MastersAggregatorService.Controllers;
 
 
 [ApiController]
-//[Route("{controller}")]
 [Route("api/[controller]/[action]")]
 [Produces("application/json")]
 [Consumes("application/json")]

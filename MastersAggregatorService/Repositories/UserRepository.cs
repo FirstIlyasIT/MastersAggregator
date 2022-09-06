@@ -1,4 +1,5 @@
 using Dapper;
+using MastersAggregatorService.Interfaces;
 using MastersAggregatorService.Models;
 using Npgsql;
 
@@ -6,6 +7,14 @@ namespace MastersAggregatorService.Repositories;
 
 public class UserRepository : BaseRepository<User>, IUserRepository
 {
+    public UserRepository(IConfiguration configuration) : base(configuration)
+    {
+    }
+
+    /// <summary>
+    /// Получить список всех User (Async)
+    /// </summary>
+    /// <returns></returns>
     public async Task<IEnumerable<User>> GetAllAsync()
     {
         const string sqlQuery =
@@ -16,14 +25,19 @@ public class UserRepository : BaseRepository<User>, IUserRepository
             @" FROM master_shema.users";
         await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
+
         var users = await connection.QueryAsync<User>(sqlQuery);
         
         return users;
     }
 
+    /// <summary>
+    /// Получить список всех User  
+    /// </summary>
+    /// <returns></returns>
     public IEnumerable<User> GetAll()
     {
-        return GetAllAsync().Result;
+        return GetAllAsync().GetAwaiter().GetResult();
     }
 
     public async Task<User> GetByIdAsync(int userId)
@@ -42,7 +56,12 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         return user;
     }
 
-    public User GetById(int id)
+    /// <summary>
+    /// Получить обьект User по его id  
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns> 
+    public User? GetById(int id)
     {
         return GetByIdAsync(id).Result;
     }
@@ -63,6 +82,7 @@ public class UserRepository : BaseRepository<User>, IUserRepository
 
         return result;
     }
+ 
 
     public User Save(User model)
     {
@@ -101,5 +121,6 @@ public class UserRepository : BaseRepository<User>, IUserRepository
 
     public UserRepository(IConfiguration configuration) : base(configuration)
     {
-    }
+        DeleteAsync(model).GetAwaiter().GetResult();
+    } 
 }

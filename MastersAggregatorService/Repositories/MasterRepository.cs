@@ -1,59 +1,152 @@
+using Dapper;
+using MastersAggregatorService.Interfaces;
 using MastersAggregatorService.Models;
+using Npgsql;
 
 namespace MastersAggregatorService.Repositories;
 
-public class MasterRepository : BaseRepository<Master>
+public class MasterRepository : BaseRepository<Master>, IMasterRepository
 {
-    private static IEnumerable<Master> MastersList { get; set; } // TODO: Временное решение для тестов, потом нужно заменить на DBConnection
-    
-    public Master GetById(int id)
-    {
-        return MastersList.FirstOrDefault(x => x.Id == id);
-    }
-
-    public IEnumerable<Master> GetAll()
-    {
-        return MastersList;
-    }
-
-    public virtual IEnumerable<Master> GetByCondition(bool condition) // TODO: временно виртуальный для прохождения тестов
-    {
-        return MastersList.Where(x => x.IsActive == condition).ToList();
-    }
-
-    /// <summary>
-    /// Changes model condition and returns it back
-    /// </summary>
-    /// <param name="model">Object to save</param>
-    /// <returns>New object with database Id</returns>
-    public Master ChangeCondition(Master master)
-    {
-        if (master.IsActive == false)
-        {
-            master.IsActive = true;
-            return Save(master);
-        }
-
-        master.IsActive = false;
-        return Save(master);
-    }
-
-    /// <summary>
-    /// Saves a new object or updates if exist
-    /// </summary>
-    /// <param name="model">Object to save</param>
-    /// <returns>New object with database Id</returns>
-    public Master Save(Master model)
-    {
-        return model;
-    }
-
-    public void Delete(Master model)
-    {
-        throw new NotImplementedException();
-    }
-
     public MasterRepository(IConfiguration configuration) : base(configuration)
     {
     }
+
+    /// <summary>
+    /// Get a list of all masters (Async)
+    /// </summary>
+    /// <returns></returns>
+    public async Task<IEnumerable<Master>> GetAllAsync()
+    {
+        string sqlQuery = @"SELECT id AS Id, name AS MastersName, is_active AS IsActive " +
+                                @"FROM master_shema.masters  ORDER BY id";
+
+        await using var connection = new NpgsqlConnection(ConnectionString); 
+        connection.Open();
+        var masters = await connection.QueryAsync<Master>(sqlQuery); 
+        return masters;
+    }
+
+    /// <summary>
+    /// Get a list of all masters  
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerable<Master> GetAll()
+    {
+        return GetAllAsync().GetAwaiter().GetResult();
+    }
+
+
+    /// <summary>
+    /// Get the Master object by its id (Async)
+    /// </summary>
+    /// <param name="idMaster"></param>
+    /// <returns></returns> 
+    public async Task<Master> GetByIdAsync(int idMaster)
+    {
+        string sqlQuery = @"SELECT id AS Id, name AS MastersName, is_active AS IsActive  " +
+                                @"FROM master_shema.masters WHERE Id = @idMaster";
+
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        connection.Open();
+
+        return await connection.QueryFirstOrDefaultAsync<Master>(sqlQuery, new { idMaster }); 
+    }
+
+    /// <summary>
+    /// Get the Master object by its id  
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns> 
+    public Master? GetById(int id)
+    {
+        return GetByIdAsync(id).GetAwaiter().GetResult();
+    }
+
+
+    /// <summary>
+    /// Returns a list of all masters in free(true) busy(false) status (async method)
+    /// </summary>
+    /// <param name="condition"></param>
+    /// <returns></returns>    
+    public async Task<IEnumerable<Master>> GetByConditionAsync(bool condition) 
+    {
+        string sqlQuery = @"SELECT id AS Id, name AS MastersName, is_active AS IsActive " +
+                                @"FROM master_shema.masters WHERE is_active = @condition";
+
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        connection.Open();
+
+        var masters = await connection.QueryAsync<Master>(sqlQuery, new { condition }); 
+        return masters;
+    }
+
+
+    /// <summary>
+    /// Changes Master condition and returns it back (async)
+    /// </summary>
+    /// <param name="model">Object to save</param>
+    /// <returns>New object with database Id</returns>
+    public async Task<Master> UpdateAsync(Master model)
+    { 
+        string sqlQuery = @"UPDATE master_shema.masters SET is_active = @IsActive, name = @MastersName  WHERE id = @Id";  
+ 
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        connection.Open();
+
+        await connection.ExecuteAsync(sqlQuery, new { model.Id, model.MastersName, model.IsActive });
+        return model;
+    }
+
+
+    /// <summary>
+    /// Saves a new Master or updates if exist (async)
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns>New object</returns>
+    public async Task<Master> SaveAsync(Master model)
+    {
+        string sqlQuery = @"INSERT INTO master_shema.masters (name, is_active) VALUES (@MastersName, @IsActive)"; 
+
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        connection.Open();
+         
+        await connection.ExecuteAsync(sqlQuery, new { model.MastersName, model.IsActive });
+        return model; 
+    }
+
+    /// <summary>
+    /// Saves a new Master or updates if exist
+    /// </summary>
+    /// <param name="model">Object to save</param>
+    /// <returns>New object</returns>
+    public Master Save(Master model)
+    {
+        return SaveAsync(model).GetAwaiter().GetResult();
+    }
+
+
+    /// <summary>
+    /// Delete (async)
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    public async Task DeleteAsync(Master model)
+    {
+        string sqlQuery = @"DELETE FROM master_shema.masters WHERE id = @Id";
+
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        connection.Open();
+         
+        await connection.ExecuteAsync(sqlQuery, new { model.Id });
+    }
+
+    /// <summary>
+    /// Delete 
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    public void Delete(Master model)
+    { 
+        DeleteAsync(model).GetAwaiter().GetResult();
+    } 
 }

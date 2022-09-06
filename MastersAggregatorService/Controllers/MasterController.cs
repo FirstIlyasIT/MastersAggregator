@@ -1,33 +1,38 @@
+using MastersAggregatorService.Interfaces;
 using MastersAggregatorService.Models;
-using MastersAggregatorService.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MastersAggregatorService.Controllers;
 
-[Route("{controller}")]
+[ApiController]
+[Route("api/[controller]/[action]")]
 [Produces("application/json")]
 [Consumes("application/json")]
 public class MasterController : BaseController<Master>
 {
-    private readonly MasterRepository _repository;
+    private readonly IMasterRepository _repository;
 
-    public MasterController(MasterRepository repository)
+    public MasterController(IMasterRepository repository)
     {
         _repository = repository;
     }
-    
+ 
     /// <summary>
     /// GET all masters
     /// </summary> 
     /// <returns>List of all masters in Json format</returns>
     /// <response code="200"> Returns List of all Masters in Json format.</response>
     [HttpGet]
-    [Route("masters")]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAll()
     {
-        return Ok(new JsonResult(_repository.GetAll()));
+        var masters = await _repository.GetAllAsync();
+        if (masters.Any())
+            return Ok(masters);
+        else
+            return NotFound();
     }
-    
+
+
     /// <summary>
     /// GET master by Id
     /// </summary>
@@ -36,59 +41,101 @@ public class MasterController : BaseController<Master>
     /// <response code="200"> Returns Master by id in Json format.</response>
     /// <response code="404"> Master does not exist.</response>
     [HttpGet("{id:int}")]
-    public IActionResult GetById(int id)
+    public async Task<IActionResult> GetById(int id)
     {
-        var master = _repository.GetById(id);
-        
+        var master = await _repository.GetByIdAsync(id);
+
         if (master is null)
         {
             return NotFound();
         }
-        
-        return Ok(new JsonResult(master));
+
+        return Ok(master);
     }
-    
+
+
     /// <summary>
     /// GET masters by condition
     /// </summary>
-    /// <param name="Boolean condition"></param>
+    /// <param name="condition"></param>
     /// <returns>List of masters by condition in Json format</returns>
     /// <response code="200"> Returns Masters by condition in Json format.</response>
     /// <response code="404"> Masters with this condition does not exist</response>
     [HttpGet("{condition:bool}")]
-    public IActionResult GetByCondition(bool condition)
+    public async Task<IActionResult> GetByCondition(bool condition)
     {
-        var masters = _repository.GetByCondition(condition);
+        var masters = await _repository.GetByConditionAsync(condition);
         if (masters.Any())
         {
-            return Ok(new JsonResult(masters));
+            return Ok(masters);
         }
         else
         {
             return NotFound();
         }
-        
     }
 
+     
     /// <summary>
-    /// POST to change master's condition
+    /// Create new master's
     /// </summary>
-    /// <param name="ObjectMaster"></param>
+    /// <param name="master"></param>
+    /// <returns></returns>
+    [HttpPost] 
+    public async Task<IActionResult> CreateMaster([FromBody] Master master)
+    {
+        //переопределен метод Equals() и сравниваем пока по id и имени (MastersName) есть ли такой Master в БД то return BadRequest()
+        var masters = await _repository.GetAllAsync();
+
+        if (masters.Any(u => u.MastersName.Equals(master.MastersName) == true))
+            return BadRequest(); 
+
+        await _repository.SaveAsync(master);
+        return NoContent();
+    }
+
+
+    /// <summary>
+    /// PUT to change master's 
+    /// </summary>
+    /// <param name="master"></param>
     /// <returns>Master with changed condition in Json format</returns>
     /// <response code="200"> Changes master's condition.</response>
     /// <response code="400"> Invalid master's model</response>
-    [HttpPost]
-    [Route("ChangeCondition")]
-    public IActionResult ChangeCondition(Master master)
+    [HttpPut] 
+    public async Task<IActionResult> UpdateMaster(Master master)
     {
-        if (ModelState.IsValid)
+        var masters = await _repository.GetAllAsync();
+
+        if (masters.Any(u => u.MastersName.Equals(master.MastersName) == true))
         {
-            _repository.ChangeCondition(master);
-            return Ok();
+            await _repository.UpdateAsync(master);
+            return NoContent();
         }
         else
         {
             return BadRequest();
+        }
+    }
+
+
+    /// <summary>
+    /// Delete Master
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>    
+    /// <response code="200"> Delete master </response>
+    /// <response code="400"> Invalid master's model</response>
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteMaster(int id)
+    {
+        var master = await _repository.GetByIdAsync(id);
+        if (master is null)
+            return BadRequest();
+        else
+        {
+            await _repository.DeleteAsync(master);
+            return NoContent();
         }
     }
 }

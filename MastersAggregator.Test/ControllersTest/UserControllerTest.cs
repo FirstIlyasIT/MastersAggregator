@@ -1,6 +1,6 @@
 using MastersAggregatorService.Controllers;
+using MastersAggregatorService.Interfaces;
 using MastersAggregatorService.Models;
-using MastersAggregatorService.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
@@ -20,7 +20,8 @@ public class UserControllerTest
         var result = await controller.GetUserById(15);
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
     }
-    
+
+
     [Test]
     public async Task GetByIdBadResultTest()
     {
@@ -30,6 +31,7 @@ public class UserControllerTest
         var result = await controller.GetUserById(76);
         Assert.That(result, Is.InstanceOf<NotFoundResult>());
     }
+
 
     [Test]
     public async Task GetUsersOkResultTest()
@@ -46,6 +48,7 @@ public class UserControllerTest
         Assert.That((resultGetUsers as ObjectResult).Value, Is.EqualTo(expectedGetUsers));
     }
 
+
     [Test]
     public async Task DeleteUserOkResultTest()
     {
@@ -60,6 +63,7 @@ public class UserControllerTest
 
     }
     
+
     [Test]
     public async Task DeleteUserBadResultTest()
     {
@@ -73,6 +77,8 @@ public class UserControllerTest
         Assert.That((resultDeleteUser as StatusCodeResult).StatusCode, Is.EqualTo(400)); 
 
     }
+
+
     [Test]
     public async Task CreateUserOkResultTest()
     {
@@ -85,6 +91,7 @@ public class UserControllerTest
         // Assert
         Assert.That((resultDeleteUser as StatusCodeResult).StatusCode, Is.EqualTo(204));
     }
+
 
     [Test]
     public async Task CreateUserBadResultTest()
@@ -99,6 +106,7 @@ public class UserControllerTest
         Assert.That((resultDeleteUser as StatusCodeResult).StatusCode, Is.EqualTo(400));
     }
 
+
     [Test]
     public async Task UpdateUserOkResultTest()
     {
@@ -112,6 +120,7 @@ public class UserControllerTest
         Assert.That((resultDeleteUser as StatusCodeResult).StatusCode, Is.EqualTo(204));
     }
 
+
     [Test]
     public async Task UpdateUserBadResultTest()
         // Arrange
@@ -123,8 +132,7 @@ public class UserControllerTest
         var resultDeleteUser = await controller.UpdateUser(StaticData.TestUser1);
         // Assert
         Assert.That((resultDeleteUser as StatusCodeResult).StatusCode, Is.EqualTo(400));
-    }
- 
+    } 
 }
 
 

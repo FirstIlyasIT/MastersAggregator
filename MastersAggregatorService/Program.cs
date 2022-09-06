@@ -1,3 +1,4 @@
+using MastersAggregatorService.Interfaces;
 using MastersAggregatorService.Repositories;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -34,10 +35,10 @@ builder.Services.AddCors(); // возможно следует удалить в
 });
 
 //Добавили в сервис наши Repository 
-builder.Services.AddScoped<IImageRepository ,ImageRepository>()
+builder.Services.AddScoped<IImageRepository, ImageRepository>()
                 .AddScoped<IUserRepository, UserRepository>()
-                .AddScoped<OrderRepository>()
-                .AddScoped<MasterRepository>();
+                .AddScoped<IOrderRepository, OrderRepository>()
+                .AddScoped<IMasterRepository, MasterRepository>();
 
 var app = builder.Build();
 

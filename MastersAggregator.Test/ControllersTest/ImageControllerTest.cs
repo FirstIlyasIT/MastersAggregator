@@ -2,7 +2,6 @@ using MastersAggregatorService.Controllers;
 using MastersAggregatorService.Models;
 using MastersAggregatorService.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
@@ -10,123 +9,122 @@ using NUnit.Framework;
 namespace MastersAggregator.Test.ControllersTest;
 
 public class ImageControllerTest
-{
+{ 
     [Test]
-    public async Task Get_Image_Ok_Result_Test()
+    public void Get_Image_Ok_Result_Test()
     {
-        
         // Arrange
-        var repository = Substitute.For<IImageRepository>();
-        repository.GetByIdAsync(15).Returns(Task.FromResult(StaticDataImage.TestImage1));
+        var repository = Substitute.For<ImageRepository>();
+        repository.GetById(15).Returns(StaticDataImage.TestImage1);
         var controller = new ImageController(repository);
         // Act
-        var result = await controller.GetImageById(15);
+        var result = controller.GetImage(15);
         // Assert
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
     }
 
     [Test]
-    public async Task Get_Image_Bad_Result_Test()
+    public void Get_Image_Bad_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<IImageRepository>();
-        repository.GetByIdAsync(15).Returns(Task.FromResult(StaticDataImage.TestImage1));
+        var repository = Substitute.For<ImageRepository>();
+        repository.GetById(15).Returns(StaticDataImage.TestImage1);
         var controller = new ImageController(repository);
         // Act
-        var result = await controller.GetImageById(100);
+        var result = controller.GetImage(100);
         // Assert
         Assert.That(result, Is.InstanceOf<NotFoundResult>());
     }
 
  
     [Test]
-    public async Task Get_Images_Ok_Result_Test()
+    public void Get_Images_Ok_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<IImageRepository>();
-        repository.GetAllAsync().Returns(StaticDataImage.Images);
+        var repository = Substitute.For<ImageRepository>();
+        repository.GetAll().Returns(StaticDataImage.Images);
         var controller = new ImageController(repository);
         // Act
-        var result = await controller.GetAllImages();
+        var result = controller.GetImages();
         var expectedGetUsers = StaticData.Users;
         // Assert
         Assert.That((result as ObjectResult).StatusCode, Is.EqualTo(200)); 
     }
 
     [Test]
-    public async Task Delete_Image_Ok_Result_Test()
+    public void Delete_Image_Ok_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<IImageRepository>();
-        repository.GetByIdAsync(15).Returns(Task.FromResult(StaticDataImage.TestImage1));
+        var repository = Substitute.For<ImageRepository>();
+        repository.GetById(15).Returns(StaticDataImage.TestImage1);
         var controller = new ImageController(repository);
         // Act
-        var result = await controller.DeleteImage(15);
+        var result = controller.DeleteImage(15);
         // Assert
         Assert.That((result as StatusCodeResult).StatusCode, Is.EqualTo(204)); 
     }
 
     [Test]
-    public async Task Delete_Image_Bad_Result_Test()
+    public void Delete_Image_Bad_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<IImageRepository>();
-        repository.GetByIdAsync(15).Returns(Task.FromResult(StaticDataImage.TestImage1));
+        var repository = Substitute.For<ImageRepository>();
+        repository.GetById(15).Returns(StaticDataImage.TestImage1);
         var controller = new ImageController(repository);
         // Act
-        var result = await controller.DeleteImage(150);
-        // Assert
-        Assert.That((result as StatusCodeResult).StatusCode, Is.EqualTo(404));
-    }
-
-    [Test]
-    public async Task Create_Image_Ok_Result_Test()
-    {
-        // Arrange
-        var repository = Substitute.For<IImageRepository>();
-        repository.GetAllAsync().Returns(Task.FromResult<IEnumerable<Image>>(StaticDataImage.Images));
-        var controller = new ImageController(repository);
-        // Act
-        var result = await controller.CreateImage(StaticDataImage.TestImage1);
-        // Assert
-        Assert.That((result as StatusCodeResult).StatusCode, Is.EqualTo(204));
-    }
-
-    [Test]
-    public async Task Create_User_Image_Result_Test()
-    {
-        // Arrange
-        var repository = Substitute.For<IImageRepository>();
-        repository.GetAllAsync().Returns(Task.FromResult<IEnumerable<Image>>(StaticDataImage.Images));
-        var controller = new ImageController(repository);
-        // Act
-        var result = await controller.CreateImage(StaticDataImage.TestImage2);
+        var result = controller.DeleteImage(150);
         // Assert
         Assert.That((result as StatusCodeResult).StatusCode, Is.EqualTo(400));
     }
 
     [Test]
-    public async Task Update_Image_Ok_Result_Test()
+    public void Create_Image_Ok_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<IImageRepository>();
-        repository.GetAllAsync().Returns(Task.FromResult<IEnumerable<Image>>(StaticDataImage.Images));
+        var repository = Substitute.For<ImageRepository>();
+        repository.GetAll().Returns(StaticDataImage.Images);
         var controller = new ImageController(repository);
         // Act
-        var result = await controller.UpdateImage(StaticDataImage.TestImage2);
+        var result = controller.CreateImage(StaticDataImage.TestImage1);
         // Assert
         Assert.That((result as StatusCodeResult).StatusCode, Is.EqualTo(204));
     }
 
     [Test]
-    public async Task Update_Image_Bad_Result_Test()
+    public void Create_User_Image_Result_Test()
     {
         // Arrange
-        var repository = Substitute.For<IImageRepository>();
-        repository.GetAllAsync().Returns(Task.FromResult<IEnumerable<Image>>(StaticDataImage.Images));
+        var repository = Substitute.For<ImageRepository>();
+        repository.GetAll().Returns(StaticDataImage.Images);
         var controller = new ImageController(repository);
         // Act
-        var result = await controller.UpdateImage(StaticDataImage.TestImage1);
+        var result = controller.CreateImage(StaticDataImage.TestImage2);
+        // Assert
+        Assert.That((result as StatusCodeResult).StatusCode, Is.EqualTo(400));
+    }
+
+    [Test]
+    public void Update_Image_Ok_Result_Test()
+    {
+        // Arrange
+        var repository = Substitute.For<ImageRepository>();
+        repository.GetAll().Returns(StaticDataImage.Images);
+        var controller = new ImageController(repository);
+        // Act
+        var result = controller.UpdateImage(StaticDataImage.TestImage2);
+        // Assert
+        Assert.That((result as StatusCodeResult).StatusCode, Is.EqualTo(204));
+    }
+
+    [Test]
+    public void Update_Image_Bad_Result_Test()
+    {
+        // Arrange
+        var repository = Substitute.For<ImageRepository>();
+        repository.GetAll().Returns(StaticDataImage.Images);
+        var controller = new ImageController(repository);
+        // Act
+        var result = controller.UpdateImage(StaticDataImage.TestImage1);
         // Assert
         Assert.That((result as StatusCodeResult).StatusCode, Is.EqualTo(400));
     }
