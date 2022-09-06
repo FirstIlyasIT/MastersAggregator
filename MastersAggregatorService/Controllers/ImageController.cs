@@ -1,5 +1,6 @@
 using MastersAggregatorService.Interfaces;
 using MastersAggregatorService.Models;
+using MastersAggregatorService.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MastersAggregatorService.Controllers;

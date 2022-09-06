@@ -104,26 +104,5 @@ public class ImageRepository : BaseRepository<Image>, IImageRepository
 
     public ImageRepository(IConfiguration configuration) : base(configuration)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<Image> GetByIdAsync(int imageId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Image? Save(Image model)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Image> SaveAsync(Image model)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task UpdateAsync(Image model)
-    {
-        throw new NotImplementedException();
     }
 }
