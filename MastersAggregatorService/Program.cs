@@ -2,6 +2,7 @@ using MastersAggregatorService.Interfaces;
 using MastersAggregatorService.Repositories;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using MastersAggregatorService.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +49,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
