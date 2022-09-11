@@ -49,7 +49,8 @@ builder.Services.AddSwaggerGen(config => {
 builder.Services.AddScoped<IImageRepository, ImageRepository>()
                 .AddScoped<IUserRepository, UserRepository>()
                 .AddScoped<IOrderRepository, OrderRepository>()
-                .AddScoped<IMasterRepository, MasterRepository>();
+                .AddScoped<IMasterRepository, MasterRepository>() 
+                .AddScoped<TokenRepository>();
 
 var app = builder.Build();
 
