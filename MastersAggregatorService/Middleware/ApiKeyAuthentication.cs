@@ -8,14 +8,13 @@ namespace MastersAggregatorService.Middleware
     {
         private readonly TokenRepository _repository;
          
-        private readonly RequestDelegate _next; 
-        public ApiKeyAuthentication(RequestDelegate next, TokenRepository repository)  
-        {
-            _repository = repository;
-            _next = next; 
+        private readonly RequestDelegate _next;
+    
+        public ApiKeyAuthentication(RequestDelegate next)
+        { 
+            _next = next;
         }
-
-        public async Task InvokeAsync(HttpContext context)
+        public async Task InvokeAsync(HttpContext context, TokenRepository repo)
         {
             //ApiKey - в Swagger назначили как ключ в заголовке куда запишеться Api ключ в Request.Headers
             if (!context.Request.Headers.TryGetValue("ApiKey", out var extractedApiKey))//получеам с Header элемент ApiKey, если нет то ошибка
@@ -30,7 +29,7 @@ namespace MastersAggregatorService.Middleware
             /// </summary> 
             string strApiToken = extractedApiKey.First().ToString();
             //проверяем совпадает ли наш ключ с БД с ключем с сайта 
-            if (_repository.ValidateTokenAsync(strApiToken, context).GetAwaiter().GetResult())
+            if (!repo.ValidateTokenAsync(strApiToken, context).GetAwaiter().GetResult())
             {
                 context.Response.StatusCode = 403;
                 await context.Response.WriteAsync("Unauthorized client. (Using ApiKeyAuthentication)");

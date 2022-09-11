@@ -31,10 +31,11 @@ public class TokenRepository : BaseRepository<Token>
             if (token.ApiToken == strTokenApi)
             {
                 context.Items.Add("TokenApiUserId", token);
+
                 return true;
             } 
         }
-
+        
         return false; 
     }
 }
