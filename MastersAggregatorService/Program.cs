@@ -2,6 +2,8 @@ using MastersAggregatorService.Interfaces;
 using MastersAggregatorService.Repositories;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using Microsoft.OpenApi.Models;
+using MastersAggregatorService.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,27 +13,36 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo
+builder.Services.AddSwaggerGen(config => {
+    config.SwaggerDoc("v1", new OpenApiInfo() { Title = "WebAPI", Version = "v1" });
+    config.AddSecurityDefinition("Basic", new OpenApiSecurityScheme
     {
-        Version = "v1",
-        Title = "PrintFramer API",
-        Description = "Calculates the cost of a picture frame based on its dimensions.",
-        TermsOfService = new Uri("https://go.microsoft.com/fwlink/?LinkID=206977"),
-        Contact = new OpenApiContact
-        {
-            Name = "Your name",
-            Email = "In process",
-            Url = new Uri("https://www.microsoft.com/learn")
-        }
+        Name = "ApiKey",//новый ключ который передаеться в heder (запросе с сайта)
+        Description = "Введите Api ключ для от вашего кабинета ( ТЕСТОВЫЙ ключ Keyfwsefso987kcxfv )",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "basic"
     });
-builder.Services.AddCors(); // возможно следует удалить в будущем
+    config.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Basic"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+    builder.Services.AddCors(); // возможно следует удалить в будущем
 
     // Set the comments path for the Swagger JSON and UI.
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    c.IncludeXmlComments(xmlPath);
+    config.IncludeXmlComments(xmlPath);
 });
 
 //Добавили в сервис наши Repository 
@@ -48,6 +59,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+//добавляем сервис авторизации в Middleware
+app.UseMiddleware<ApiKeyAuthentication>();
 
 app.UseHttpsRedirection();
 
