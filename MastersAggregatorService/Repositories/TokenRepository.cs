@@ -12,10 +12,10 @@ public class TokenRepository : BaseRepository<Token>
     }
 
     /// <summary>
-    /// Проверяем существует strTokenApi в БД  
+    /// Получаем все Api токены из БД
     /// </summary>
     /// <returns></returns> 
-    public async Task<bool> ValidateTokenAsync(string strTokenApi, HttpContext context)
+    public async Task<IEnumerable<Token>> GetAllApiKeyBdAsync()
     {
         //получаем список Token из master_shema.access
         string sqlQuery = @"SELECT api_token AS ApiToken, user_name AS ApiUserName  " +
@@ -24,17 +24,7 @@ public class TokenRepository : BaseRepository<Token>
         await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
 
-        var tokens = await connection.QueryAsync<Token>(sqlQuery);
-        //проверяем есть ли такой токен в БД
-        foreach (Token token in tokens)
-        {
-            if (token.ApiToken == strTokenApi)
-            { 
-                context.Items.Add("ApiUserName", token.ApiUserName);
-                return true;
-            } 
-        }
-        
-        return false; 
+        return await connection.QueryAsync<Token>(sqlQuery);
     }
+ 
 }
