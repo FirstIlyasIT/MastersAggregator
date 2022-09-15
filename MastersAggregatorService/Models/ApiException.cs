@@ -1,6 +1,8 @@
-﻿namespace MastersAggregatorService.Errors;
+﻿using MastersAggregatorService.Models;
 
-public class ApiException
+namespace MastersAggregatorService.Errors;
+
+public class ApiException : BaseModel
 {
     public ApiException(int statusCode, string userName = null, string message = null, string details = null)
     {
