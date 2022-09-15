@@ -26,7 +26,7 @@ namespace MastersAggregatorService.Middleware
             //получаем Api Token с запроса от клиента
             string strApiToken = extractedApiKey.First();
             //Получаем коллекцию Token из БД
-            IEnumerable<Token> allApiToken = reposToken.GetAllApiKeyBdAsync().Result;
+            IEnumerable<Token> allApiToken = await reposToken.GetAllApiKeyBdAsync();
  
             //проверяем есть ли такой токен в БД
             Token? chekTokenValue = allApiToken.FirstOrDefault(token => token.ApiToken == strApiToken, null);
