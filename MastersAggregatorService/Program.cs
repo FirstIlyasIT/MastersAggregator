@@ -46,10 +46,11 @@ builder.Services.AddSwaggerGen(config => {
 
 //Добавили в сервис наши Repository 
 builder.Services.AddScoped<IImageRepository, ImageRepository>()
-                .AddScoped<IUserRepository, UserRepository>()
-                .AddScoped<IOrderRepository, OrderRepository>()
-                .AddScoped<IMasterRepository, MasterRepository>() 
-                .AddScoped<TokenRepository>();
+    .AddScoped<IUserRepository, UserRepository>()
+    .AddScoped<IOrderRepository, OrderRepository>()
+    .AddScoped<IMasterRepository, MasterRepository>()
+    .AddScoped<TokenRepository>()
+    .AddScoped<IExceptionRepository, ExceptionRepository>();
 
 var app = builder.Build();
 

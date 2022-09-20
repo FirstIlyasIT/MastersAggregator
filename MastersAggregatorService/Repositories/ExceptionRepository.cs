@@ -32,7 +32,7 @@ public class ExceptionRepository : BaseRepository<ApiException>, IExceptionRepos
         await using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
 
-        await connection.ExecuteAsync(sqlQuery);
+        await connection.ExecuteAsync(sqlQuery, ex);
     }
 
     public ExceptionRepository(IConfiguration configuration) : base(configuration)
