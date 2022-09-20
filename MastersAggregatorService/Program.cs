@@ -59,6 +59,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseMiddleware<ExceptionMiddleware>();   
+}
 //добавляем сервис авторизации в Middleware
 app.UseMiddleware<ApiKeyAuthentication>();
 
