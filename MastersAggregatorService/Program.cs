@@ -67,8 +67,6 @@ else
 //добавляем сервис авторизации в Middleware
 app.UseMiddleware<ApiKeyAuthentication>();
 
-app.UseHttpsRedirection();
-
 app.UseCors(policy => policy.AllowAnyMethod().AllowAnyMethod());
 
 app.UseAuthorization();
