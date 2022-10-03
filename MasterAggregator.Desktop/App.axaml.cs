@@ -3,6 +3,9 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using MasterAggregator.Desktop.ViewModels;
 using MasterAggregator.Desktop.Views;
+using MasterAggregator.Desktop.Services;  
+
+
 
 namespace MasterAggregator.Desktop
 {
@@ -19,7 +22,8 @@ namespace MasterAggregator.Desktop
             {
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowViewModel(),
+                    //передаем тестовые данные через UserSevic
+                    DataContext = new MainWindowViewModel(new UserSevic()),
                 };
             }
 

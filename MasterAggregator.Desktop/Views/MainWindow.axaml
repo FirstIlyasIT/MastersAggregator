@@ -3,15 +3,134 @@
         xmlns:vm="using:MasterAggregator.Desktop.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
         x:Class="MasterAggregator.Desktop.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="MasterAggregator.Desktop">
+        Title="MasterAgregator" Width="800" Height="550" Name="MyTitlePanel">
 
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+	<!--добавил тему стилей Material.Avalonia 2.5.1 полное описание и настройки в App.axaml -->
+	
+  
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+	<Window.Styles>
+		<!--Button.btn:focus - изменить элемент при событие focus в классе myClassBtn-->
+		<Style Selector="Button.myClassBtn:focus /template/ ContentPresenter">
+			<Setter Property="Background" Value="#FF2C00" />
+		</Style>
+	</Window.Styles>
 
+
+
+	<Grid >
+		<!--задаем колл строк в Grid-->
+		<Grid.RowDefinitions>
+			<RowDefinition Height="30" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<!--задаем колл колонок в Grid-->
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="250"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+
+		<!--Меню-->
+		<Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" >
+			<MenuItem Header="Авторизация">
+				<MenuItem Header="вход" Command="{Binding Open}" />
+				<MenuItem Header="выход" Command="{Binding Save}" />
+			</MenuItem>
+		</Menu>
+
+		<!--Боковая колонка-->
+		<Border Classes="Card"
+				Grid.Column="0"
+				Grid.Row="1"
+				CornerRadius="2"
+				Padding="4">
+			<StackPanel>
+				<Button Classes="myClassBtn"
+						Content="ЗАКАЗЧИКИ"
+						Command="{Binding GetAllUser}"/>
+				<Button Classes="myClassBtn"
+						Content="ЗАКАЗЫ"
+						Command="{Binding GetAllUser}"/>
+				<Button Classes="myClassBtn"
+						Content="МАСТЕРА"
+						Command="{Binding GetAllUser}"/>
+			</StackPanel>
+		</Border>
+
+		<!--Основное текстовое поле-->
+		<Border Classes="Primary"
+		Grid.Column="1"
+		Grid.Row="1"
+		CornerRadius="2"
+		Padding="3">
+			<StackPanel Grid.Row="1">
+				<Grid RowDefinitions="70,*"  Margin="4">
+					<!--Основное текстовое поле МЕНЮ-->
+					<StackPanel Grid.Row="0">
+						<Grid ColumnDefinitions="*,*,*">
+							<Button Content="ДОБАВИТЬ"
+									Background="Gray"
+									Margin="4" Grid.Row="0"
+									Grid.Column="0"
+									Command="{Binding CreateUser}"
+									CommandParameter="{Binding NewUser}"/>
+							<Button Content="РЕДАКТИРОВАТЬ"
+									Background="Gray"
+									Margin="4"
+									Grid.Row="0" Grid.Column="1"
+									Command="{Binding EditUser}"
+									CommandParameter="{Binding SelectedUser}"/>
+							<Button Content="УДАЛИТЬ"
+									Background="Gray"
+									Margin="4"
+									Grid.Row="0" Grid.Column="2"
+									Command="{Binding RemoveUser}"
+									CommandParameter="{Binding SelectedUser}"/>
+						</Grid>
+					</StackPanel>
+
+					<StackPanel Grid.Row="1">
+						<Grid>
+							<Grid RowDefinitions="40,*">
+								<StackPanel Classes="Card" Grid.Row="0">
+									<TextBlock Text="{Binding TitleList}" Margin="5,5,0,0" FontSize="22" HorizontalAlignment="Center"/>
+								</StackPanel>
+								<!-- выводим список User и устанавливаем Height что бы скролл в ListBox работал при изменение окна  Height="{Binding Path=Height,ElementName=MyTitlePanel}" -->
+								<StackPanel Grid.Row="1">
+									<ListBox Items="{Binding UserItems }"
+										SelectionMode="Single"
+										SelectedItem="{Binding SelectedUser}"
+										IsVisible="{Binding boolIsVisibleUserItems}"
+										Height="400"
+										ScrollViewer.VerticalScrollBarVisibility="Auto">
+										<ListBox.ItemTemplate>
+											<DataTemplate>
+												<Grid>
+													<Border Background="LightGray" Padding="5" CornerRadius="5">
+														<Grid ColumnDefinitions="*,*,*,*">
+															<TextBlock Text="{Binding Id}" Grid.Column="0"/>
+															<TextBlock Text="{Binding UserName}" Grid.Column="1"/>
+															<TextBlock Text="{Binding UserFirstName}" Grid.Column="2"/>
+															<TextBlock Text="{Binding UserPfone}" Grid.Column="3"/>
+														</Grid>
+													</Border>
+												</Grid>
+											</DataTemplate>
+										</ListBox.ItemTemplate>
+									</ListBox>
+								</StackPanel>
+							</Grid>
+						</Grid>
+					</StackPanel>
+
+				</Grid>
+			</StackPanel>
+
+		</Border>
+
+	</Grid>
 </Window>
